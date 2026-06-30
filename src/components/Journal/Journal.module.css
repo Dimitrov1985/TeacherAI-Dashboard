@@ -1,0 +1,463 @@
+/* Toolbar */
+.toolbar {
+  margin-bottom: 10px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.btn {
+  padding: 5px 13px;
+  background: #457B9D;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.btn:hover {
+  opacity: 0.88;
+}
+
+.btnGhost {
+  background: transparent;
+  color: #5a5a56;
+  border: 0.5px solid #d0cfc8;
+}
+
+.btnGhost:hover {
+  background: #f5f5f0;
+  opacity: 1;
+}
+
+.dateInp {
+  padding: 5px 9px;
+  border: 0.5px solid #b0afa8;
+  border-radius: 4px;
+  background: #fff;
+}
+
+/* Table */
+.tblWrap {
+  overflow-x: auto;
+  border: 1px solid #b0afa8;
+  border-radius: 8px;
+}
+
+.table {
+  border-collapse: collapse;
+  width: 100%;
+  min-width: 700px;
+}
+
+.table th,
+.table td {
+  border: 0.5px solid #d0cfc8;
+  padding: 0;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.thName {
+  text-align: left;
+  padding: 6px 11px;
+  background: #e9efff;
+  color: #457B9D;
+  font-weight: 500;
+  font-size: 12px;
+  min-width: 170px;
+  position: sticky;
+  left: 0;
+  z-index: 3;
+}
+
+.thMonth {
+  background: #e9efff;
+  color: #457B9D;
+  font-weight: 500;
+  font-size: 11px;
+  padding: 4px 6px;
+}
+
+.thDay {
+  background: #f0f4f8;
+  font-size: 11px;
+  color: #5a5a56;
+  font-weight: 400;
+  padding: 3px 2px;
+  min-width: 26px;
+}
+
+.thDay .delBtn {
+  display: none;
+  font-size: 10px;
+  color: #a32d2d;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+  line-height: 1;
+}
+
+.thDay:hover .delBtn {
+  display: block;
+}
+
+.thSum {
+  background: #e9efff;
+  color: #457B9D;
+  font-size: 11px;
+  font-weight: 500;
+  padding: 4px 5px;
+  min-width: 56px;
+}
+
+.sepCol {
+  background: #ebebea !important;
+  width: 5px;
+  padding: 0;
+  border: none;
+}
+
+.tdName {
+  text-align: left;
+  padding: 4px 11px;
+  font-size: 12px;
+  background: #fff;
+  min-width: 170px;
+  position: sticky;
+  left: 0;
+  z-index: 1;
+}
+
+.rowAlt td {
+  background: #f8f8f6;
+}
+
+.rowAlt .tdName {
+  background: #f8f8f6;
+}
+
+.table tbody tr:hover td {
+  background: #e6f1fb !important;
+}
+
+.gCell {
+  padding: 1px;
+  cursor: pointer;
+  height: 27px;
+  min-width: 26px;
+  position: relative;
+}
+
+.gCell:hover {
+  background: #eaf3de !important;
+}
+
+.gVal {
+  font-size: 12px;
+  font-weight: 500;
+  display: block;
+  line-height: 27px;
+}
+
+.g5 {
+  color: #1a7a2a;
+}
+
+.g4 {
+  color: #185fa5;
+}
+
+.g3 {
+  color: #854f0b;
+}
+
+.g2 {
+  color: #a32d2d;
+}
+
+.sp {
+  color: #9a9a94;
+  font-size: 10px;
+}
+
+.tdAvg {
+  font-size: 12px;
+  font-weight: 500;
+  color: #5a5a56;
+  padding: 0 5px;
+}
+
+.tdFin {
+  font-size: 13px;
+  font-weight: 600;
+  padding: 0 5px;
+  cursor: pointer;
+}
+
+.tdFin:hover {
+  background: #eaf3de !important;
+}
+
+.gInput {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  font-size: 12px;
+  font-weight: 500;
+  border: 1.5px solid #457B9D;
+  border-radius: 3px;
+  background: #fff;
+  color: #1a1a18;
+  padding: 0;
+  outline: none;
+}
+
+.legend {
+  margin-top: 8px;
+  font-size: 11px;
+  color: #9a9a94;
+}
+
+/* Attendance */
+.attTblWrap {
+  overflow-x: auto;
+  border: 1px solid #b0afa8;
+  border-radius: 8px;
+}
+
+.attTbl {
+  border-collapse: collapse;
+  width: 100%;
+  min-width: 600px;
+}
+
+.attTbl th,
+.attTbl td {
+  border: 0.5px solid #d0cfc8;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.attThName {
+  text-align: left;
+  padding: 5px 11px;
+  background: #e9efff;
+  color: #457B9D;
+  font-size: 12px;
+  font-weight: 500;
+  min-width: 170px;
+}
+
+.attThDay {
+  background: #f0f4f8;
+  font-size: 10px;
+  color: #5a5a56;
+  padding: 3px 2px;
+  min-width: 27px;
+}
+
+.attThStat {
+  background: #e9efff;
+  color: #457B9D;
+  font-size: 11px;
+  padding: 4px 8px;
+}
+
+.attName {
+  text-align: left;
+  padding: 4px 11px;
+  font-size: 12px;
+}
+
+.attCell {
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 500;
+  height: 27px;
+  position: relative;
+}
+
+.attCell:hover {
+  background: #e6f1fb !important;
+}
+
+.sPresent {
+  color: #1a7a2a;
+}
+
+.sAbsent {
+  color: #a32d2d;
+  background: #fcebeb;
+}
+
+.sLate {
+  color: #854f0b;
+}
+
+.sExcused {
+  color: #9a9a94;
+}
+
+.attStat {
+  font-weight: 600;
+  font-size: 12px;
+  padding: 0 8px;
+}
+
+.attDrop {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 100;
+  background: #fff;
+  border: 0.5px solid #b0afa8;
+  border-radius: 4px;
+  min-width: 155px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.attOpt {
+  padding: 6px 11px;
+  font-size: 11px;
+  cursor: pointer;
+  text-align: left;
+  color: #1a1a18;
+}
+
+.attOpt:hover {
+  background: #e6f1fb;
+}
+
+.attLegend {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+  font-size: 11px;
+  color: #9a9a94;
+}
+
+.attLegend b {
+  color: #5a5a56;
+}
+
+/* Final Grades */
+.finSection {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.statsRow {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.statCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 9px 18px;
+  border: 1.5px solid #d0cfc8;
+  border-radius: 8px;
+  background: #fff;
+  min-width: 68px;
+}
+
+.statG {
+  font-size: 21px;
+  font-weight: 500;
+  line-height: 1;
+}
+
+.statN {
+  font-size: 17px;
+  font-weight: 500;
+}
+
+.statP {
+  font-size: 10px;
+  color: #9a9a94;
+}
+
+.finTblWrap {
+  overflow-x: auto;
+  border: 0.5px solid #b0afa8;
+  border-radius: 8px;
+  max-width: 440px;
+}
+
+.finTbl {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.finTbl th,
+.finTbl td {
+  border: 0.5px solid #d0cfc8;
+  padding: 0;
+  text-align: center;
+}
+
+.finThN {
+  padding: 5px;
+  background: #e9efff;
+  color: #457B9D;
+  font-size: 11px;
+  width: 34px;
+}
+
+.finThName {
+  text-align: left;
+  padding: 5px 11px;
+  background: #e9efff;
+  color: #457B9D;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.finThV {
+  padding: 5px 8px;
+  background: #e9efff;
+  color: #457B9D;
+  font-size: 11px;
+  min-width: 62px;
+}
+
+.finNum {
+  color: #9a9a94;
+  font-size: 11px;
+  padding: 4px;
+}
+
+.finName {
+  text-align: left;
+  padding: 4px 11px;
+  font-size: 12px;
+}
+
+.finAvg {
+  font-size: 11px;
+  color: #5a5a56;
+  font-weight: 500;
+  padding: 0 6px;
+}
+
+.finFin {
+  font-size: 13px;
+  font-weight: 600;
+  padding: 0 6px;
+  cursor: pointer;
+}
+
+.finFin:hover {
+  background: #eaf3de !important;
+}

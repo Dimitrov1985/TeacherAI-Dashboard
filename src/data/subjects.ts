@@ -1,0 +1,28 @@
+export const SUBJECTS = [
+  'Mathematics',
+  'Physics',
+  'Chemistry',
+  'Biology',
+  'English',
+  'Thai',
+  'Chinese',
+  'History',
+  'Geography',
+  'Social Studies',
+  'Computer Science',
+  'Information Technology',
+  'Physical Education',
+  'Art',
+  'Music',
+  'Science',
+  'Literature',
+  'Economics',
+  'Accounting',
+  'Business Studies',
+  'Health Education',
+  'Career and Technology',
+  'Guidance',
+  'Other',
+] as const
+
+export type Subject = typeof SUBJECTS[number]
