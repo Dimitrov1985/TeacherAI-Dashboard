@@ -4,9 +4,13 @@ import { loadStudents, updateStudent, deleteStudent, addStudent } from '../../li
 import type { Student } from '../../data/students'
 
 // Types
+type ColumnType = 'lesson' | 'test' | 'exam' | 'homework'
+
 interface DateEntry {
   m: string
   d: number
+  title?: string
+  type?: ColumnType
 }
 
 interface DateEntryIndexed extends DateEntry {
@@ -236,7 +240,7 @@ interface JournalTabProps {
   subjectName: string
   onGrade: (si: number, ci: number, v: GradeValue) => void
   onFin: (si: number, v: number) => void
-  onAddLesson: (month: string, day: number) => void
+  onAddLesson: (month: string, day: number, title?: string, type?: ColumnType) => void
   onDelLesson: (idx: number) => void
   setConducted: React.Dispatch<React.SetStateAction<boolean[]>>
   editingStudent: { si: number; field: 'firstName' | 'lastName' } | null
@@ -270,6 +274,10 @@ function JournalTab({
 }: JournalTabProps) {
   const [showAdd, setShowAdd] = useState(false)
   const [newDate, setNewDate] = useState('')
+  const [showAddColumn, setShowAddColumn] = useState(false)
+  const [columnTitle, setColumnTitle] = useState('')
+  const [columnDate, setColumnDate] = useState('')
+  const [columnType, setColumnType] = useState<ColumnType>('lesson')
   const groups = useMemo(() => groupByMonth(dates), [dates])
 
   function handleAdd() {
@@ -278,6 +286,16 @@ function JournalTab({
     onAddLesson(MONTH_NAMES[dt.getMonth()], dt.getDate())
     setNewDate('')
     setShowAdd(false)
+  }
+
+  function handleAddColumn() {
+    if (!columnDate) return
+    const dt = new Date(columnDate)
+    onAddLesson(MONTH_NAMES[dt.getMonth()], dt.getDate(), columnTitle.trim() || undefined, columnType)
+    setColumnTitle('')
+    setColumnDate('')
+    setColumnType('lesson')
+    setShowAddColumn(false)
   }
 
   function handleFin(si: number, cur: number | null) {
@@ -298,11 +316,16 @@ function JournalTab({
         borderBottom: '2px solid #DCE8F5'
       }}>
         {/* Add Lesson Button (left) */}
-        <div style={{ position: 'absolute', left: 0 }}>
-          {!showAdd && (
-            <button className="btn" onClick={() => setShowAdd(true)}>
-              + Add Lesson
-            </button>
+        <div style={{ position: 'absolute', left: 0, display: 'flex', gap: '8px', flexDirection: 'row', alignItems: 'flex-start' }}>
+          {!showAdd && !showAddColumn && (
+            <>
+              <button className="btn" onClick={() => setShowAdd(true)}>
+                + Add Lesson
+              </button>
+              <button className="btn btn-ghost" onClick={() => setShowAddColumn(true)}>
+                + Add Column
+              </button>
+            </>
           )}
           {showAdd && (
             <div style={{ display: 'flex', gap: '8px' }}>
@@ -324,6 +347,87 @@ function JournalTab({
                 Cancel
               </button>
             </div>
+          )}
+          {showAddColumn && (
+            <>
+              <div
+                style={{
+                  position: 'fixed',
+                  inset: 0,
+                  background: 'rgba(0, 0, 0, 0.3)',
+                  zIndex: 40,
+                }}
+                onClick={() => setShowAddColumn(false)}
+              />
+              <div
+                style={{
+                  position: 'fixed',
+                  top: '50%',
+                  left: '50%',
+                  transform: 'translate(-50%, -50%)',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '12px',
+                  background: 'white',
+                  padding: '20px',
+                  border: '1px solid #ddd',
+                  borderRadius: '12px',
+                  minWidth: '350px',
+                  boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
+                  zIndex: 50,
+                }}
+                onClick={(e) => e.stopPropagation()}
+              >
+                <h3 style={{ margin: 0, fontSize: '16px', fontWeight: 600, color: '#1D3557' }}>Add Special Column</h3>
+                <input
+                  type="text"
+                  placeholder="Title (e.g., Контрольная работа)"
+                  value={columnTitle}
+                  onChange={(e) => setColumnTitle(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') handleAddColumn()
+                    if (e.key === 'Escape') setShowAddColumn(false)
+                  }}
+                  className="date-inp"
+                  style={{ width: '100%' }}
+                  autoFocus
+                />
+                <input
+                  type="date"
+                  value={columnDate}
+                  onChange={(e) => setColumnDate(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') handleAddColumn()
+                    if (e.key === 'Escape') setShowAddColumn(false)
+                  }}
+                  className="date-inp"
+                  style={{ width: '100%' }}
+                />
+                <select
+                  value={columnType}
+                  onChange={(e) => setColumnType(e.target.value as ColumnType)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') handleAddColumn()
+                    if (e.key === 'Escape') setShowAddColumn(false)
+                  }}
+                  className="date-inp"
+                  style={{ width: '100%' }}
+                >
+                  <option value="lesson">Lesson</option>
+                  <option value="test">Test</option>
+                  <option value="exam">Exam</option>
+                  <option value="homework">Homework</option>
+                </select>
+                <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
+                  <button className="btn btn-ghost" onClick={() => setShowAddColumn(false)}>
+                    Cancel
+                  </button>
+                  <button className="btn" onClick={handleAddColumn}>
+                    Save
+                  </button>
+                </div>
+              </div>
+            </>
           )}
         </div>
 
@@ -359,14 +463,28 @@ function JournalTab({
             <tr>
               {groups.map((g, gi) => (
                 <React.Fragment key={`day-${g.name}`}>
-                  {g.entries.map((e) => (
-                    <th key={e.idx} className="th-day" title={`${e.m} ${e.d}`}>
-                      <span>{e.d}</span>
-                      <button className="del-btn" onClick={() => onDelLesson(e.idx)}>
-                        ✕
-                      </button>
-                    </th>
-                  ))}
+                  {g.entries.map((e) => {
+                    const columnTypeClass = e.type ? `th-day-${e.type}` : ''
+                    return (
+                      <th
+                        key={e.idx}
+                        className={`th-day ${columnTypeClass}`}
+                        title={e.title ? `${e.title} (${e.m} ${e.d})` : `${e.m} ${e.d}`}
+                      >
+                        {e.title ? (
+                          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                            <span style={{ fontSize: '9px', fontWeight: 600 }}>{e.title}</span>
+                            <span>{e.d}</span>
+                          </div>
+                        ) : (
+                          <span>{e.d}</span>
+                        )}
+                        <button className="del-btn" onClick={() => onDelLesson(e.idx)}>
+                          ✕
+                        </button>
+                      </th>
+                    )
+                  })}
                 </React.Fragment>
               ))}
             </tr>
@@ -649,8 +767,12 @@ const TABS = ['Journal'] as const
 
 export default function JournalContainer() {
   const [tab, setTab] = useState(0)
-  const [selectedClassId, setSelectedClassId] = useState('')
-  const [selectedSubjectId, setSelectedSubjectId] = useState('')
+  const [selectedClassId, setSelectedClassId] = useState(() => {
+    return localStorage.getItem('journal-selected-class') || ''
+  })
+  const [selectedSubjectId, setSelectedSubjectId] = useState(() => {
+    return localStorage.getItem('journal-selected-subject') || ''
+  })
 
   const [students, setStudents] = useState<Student[]>([])
   const [dates, setDates] = useState<DateEntry[]>([])
@@ -768,6 +890,19 @@ export default function JournalContainer() {
     }
   }
 
+  // Save selected class and subject to localStorage
+  useEffect(() => {
+    if (selectedClassId) {
+      localStorage.setItem('journal-selected-class', selectedClassId)
+    }
+  }, [selectedClassId])
+
+  useEffect(() => {
+    if (selectedSubjectId) {
+      localStorage.setItem('journal-selected-subject', selectedSubjectId)
+    }
+  }, [selectedSubjectId])
+
   // Save journal data when it changes
   useEffect(() => {
     if (!selectedClassId || !selectedSubjectId || students.length === 0) return
@@ -775,10 +910,15 @@ export default function JournalContainer() {
     const key = `journal_${selectedClassId}_${selectedSubjectId}`
     const data = { dates, grades, attendance, finalOverride, conducted }
     localStorage.setItem(key, JSON.stringify(data))
+    console.log('Journal data saved:', key, data)
   }, [selectedClassId, selectedSubjectId, dates, grades, attendance, finalOverride, conducted, students])
 
-  function addLesson(month: string, day: number): void {
-    setDates((prev) => [...prev, { m: month, d: day }])
+  function addLesson(month: string, day: number, title?: string, type?: ColumnType): void {
+    const newEntry: DateEntry = { m: month, d: day }
+    if (title) newEntry.title = title
+    if (type) newEntry.type = type
+
+    setDates((prev) => [...prev, newEntry])
     setGrades((prev) => prev.map((r) => [...r, '']))
     setAttendance((prev) => prev.map((r) => [...r, 'present']))
     setConducted((prev) => [...prev, false])
@@ -986,6 +1126,9 @@ export default function JournalContainer() {
         .th-day{background:#f0f4f8;font-size:11px;color:var(--text2);font-weight:400;padding:3px 2px;min-width:26px;position:relative}
         .th-day .del-btn{display:none;font-size:10px;color:var(--g2);cursor:pointer;background:none;border:none;padding:0;line-height:1}
         .th-day:hover .del-btn{display:block}
+        .th-day-test{background:#fff3cd;color:#856404;font-weight:600}
+        .th-day-exam{background:#f8d7da;color:#721c24;font-weight:600}
+        .th-day-homework{background:#d1ecf1;color:#0c5460;font-weight:600}
         .th-cb{background:#f0f4fa;padding:4px 2px;min-width:26px;cursor:pointer}
         .cb-wrap{display:flex;align-items:center;justify-content:center;height:26px}
         .cb{width:14px;height:14px;border-radius:2px;border:1.5px solid var(--border-s);display:flex;align-items:center;justify-content:center;background:white}
