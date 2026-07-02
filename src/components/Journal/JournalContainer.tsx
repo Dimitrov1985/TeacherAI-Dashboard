@@ -979,7 +979,7 @@ export default function JournalContainer() {
         .btn-ghost:hover{background:var(--bg);opacity:1}
         .date-inp{padding:5px 9px;border:0.5px solid var(--border-s);border-radius:var(--r-sm);background:var(--surface)}
         .tbl-wrap{overflow-x:auto;border:1px solid var(--border-s);border-radius:var(--r)}
-        table{border-collapse:collapse;width:100%;min-width:700px}
+        table{border-collapse:collapse;width:auto;min-width:700px}
         th,td{border:0.5px solid var(--border);padding:0;text-align:center;white-space:nowrap}
         .th-name{text-align:left;padding:6px 11px;background:var(--accent-bg);color:var(--accent);font-weight:500;font-size:12px;min-width:227px;max-width:227px;width:227px;position:sticky;left:0;z-index:3}
         .th-month{background:var(--accent-bg);color:var(--accent);font-weight:500;font-size:11px;padding:4px 6px;min-width:26px}
