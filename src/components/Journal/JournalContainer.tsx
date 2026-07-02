@@ -996,10 +996,13 @@ export default function JournalContainer() {
         .td-name{text-align:left;padding:4px 11px;font-size:12px;background:var(--surface);min-width:227px;max-width:227px;width:227px;position:sticky;left:0;z-index:1}
         .row-alt td{background:var(--surface1)}.row-alt .td-name{background:var(--surface1)}
         tbody tr:hover td{background:var(--accent-bg)!important}
-        .g-cell{padding:1px;cursor:pointer;height:27px;min-width:26px;position:relative}
-        .g-cell:hover{background:var(--g5bg)!important}
-        .g-val{font-size:15px;font-weight:500;display:block;line-height:27px}
-        .g5{color:var(--g5)}.g4{color:var(--g4)}.g3{color:var(--g3)}.g2{color:var(--g2)}.sp{color:var(--muted)}
+        .g-cell{width:26px;height:26px;text-align:center;vertical-align:middle;cursor:pointer;padding:0;position:relative}
+        .g-val{font-size:13px;font-weight:500;line-height:26px;display:block}
+        .g-val.g5{color:#22c55e}
+        .g-val.g4{color:#3b82f6}
+        .g-val.g3{color:#f97316}
+        .g-val.g2{color:#ffffff;background:#ef4444}
+        .g-val.sp{color:#9ca3af}
         .td-avg{font-size:12px;font-weight:500;color:var(--text2);padding:0 5px}
         .td-fin{font-size:13px;font-weight:600;padding:0 5px;cursor:pointer}
         .td-fin:hover{background:var(--g5bg)!important}
