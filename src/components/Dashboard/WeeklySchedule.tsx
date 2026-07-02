@@ -151,7 +151,9 @@ export default function WeeklySchedule() {
                             color: lesson.color,
                           }}
                         >
-                          <span className="text-[11px] leading-tight">{lesson.title}</span>
+                          <span className="text-[11px] font-medium leading-tight">
+                            {lesson.title}{lesson.class ? ` — ${lesson.class}` : ''}
+                          </span>
                           <span className="flex items-center gap-1 text-[10px]">
                             <IconClock className="h-3 w-3" />
                             {lesson.start} - {lesson.end}

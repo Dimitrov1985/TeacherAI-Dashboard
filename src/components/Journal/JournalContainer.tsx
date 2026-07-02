@@ -106,7 +106,21 @@ const GRADE_OPTIONS = ['-2', '-1', '1', '2', '3', '4', '5', 'ab']
 
 function GradeCell({ value, onSave }: GradeCellProps) {
   const [showDropdown, setShowDropdown] = useState(false)
+  const [editing, setEditing] = useState(false)
+  const [draft, setDraft] = useState(value)
   const dropdownRef = useRef<HTMLDivElement>(null)
+  const inputRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    setDraft(value)
+  }, [value])
+
+  useEffect(() => {
+    if (editing && inputRef.current) {
+      inputRef.current.focus()
+      inputRef.current.select()
+    }
+  }, [editing])
 
   useEffect(() => {
     if (!showDropdown) return
@@ -126,11 +140,74 @@ function GradeCell({ value, onSave }: GradeCellProps) {
     setShowDropdown(false)
   }
 
+  function handleKeyDown(e: React.KeyboardEvent) {
+    if (e.key === 'Enter') {
+      onSave(draft.trim())
+      setEditing(false)
+    }
+    if (e.key === 'Escape') {
+      setDraft(value)
+      setEditing(false)
+    }
+    if (e.key === 'Delete' || e.key === 'Backspace') {
+      if (!editing) {
+        e.preventDefault()
+        onSave('')
+      }
+    }
+  }
+
+  function handleClick(e: React.MouseEvent) {
+    if (e.detail === 2) {
+      // Double-click → ручной ввод
+      setShowDropdown(false)
+      setEditing(true)
+    } else {
+      // Single-click → dropdown
+      setShowDropdown(true)
+    }
+  }
+
+  if (editing) {
+    return (
+      <td className="g-cell" style={{ position: 'relative' }}>
+        <input
+          ref={inputRef}
+          className="g-input"
+          value={draft}
+          maxLength={3}
+          onChange={(e) => setDraft(e.target.value)}
+          onBlur={() => {
+            onSave(draft.trim())
+            setEditing(false)
+          }}
+          onKeyDown={handleKeyDown}
+        />
+      </td>
+    )
+  }
+
+  const cellStyle: React.CSSProperties = {
+    position: 'relative',
+    ...(value.toLowerCase() === 'ab' ? { backgroundColor: '#fcebeb' } : {})
+  }
+
   return (
-    <td className="g-cell" onClick={() => setShowDropdown(true)} style={{ position: 'relative' }}>
+    <td className="g-cell" onClick={handleClick} onKeyDown={handleKeyDown} tabIndex={0} style={cellStyle}>
       <span className={`g-val ${gClass(value)}`}>{value}</span>
       {showDropdown && (
         <div ref={dropdownRef} className="grade-dropdown">
+          <div
+            className="grade-option"
+            onClick={(e) => {
+              e.stopPropagation()
+              onSave('')
+              setShowDropdown(false)
+            }}
+            style={{ color: '#a32d2d', fontWeight: 600 }}
+          >
+            Clear
+          </div>
           {GRADE_OPTIONS.map((opt) => (
             <div
               key={opt}
@@ -316,7 +393,7 @@ function JournalTab({
                           if (e.key === 'Enter') onSaveEdit()
                           if (e.key === 'Escape') onCancelEdit()
                         }}
-                        onBlur={onSaveEdit}
+                        onBlur={onCancelEdit}
                       />
                     ) : (
                       <span
@@ -338,7 +415,7 @@ function JournalTab({
                           if (e.key === 'Enter') onSaveEdit()
                           if (e.key === 'Escape') onCancelEdit()
                         }}
-                        onBlur={onSaveEdit}
+                        onBlur={onCancelEdit}
                       />
                     ) : (
                       <span
@@ -420,12 +497,16 @@ function AttendanceTab({ students, dates, attendance, onSet }: AttendanceTabProp
                 </th>
               ))}
               <th className="att-th-stat">Absences</th>
+              <th className="att-th-stat">Attendance %</th>
             </tr>
           </thead>
           <tbody>
             {students.map((student, si) => {
               const row = attendance[si] || []
+              const total = dates.length
               const absent = row.filter((s) => s === 'absent').length
+              const present = row.filter((s) => s === 'present').length
+              const attendancePercent = total > 0 ? Math.round((present / total) * 100) : 0
               return (
                 <tr key={student.id} className={si % 2 === 1 ? 'row-alt' : ''}>
                   <td className="att-name">
@@ -464,6 +545,9 @@ function AttendanceTab({ students, dates, attendance, onSet }: AttendanceTabProp
                   })}
                   <td className="att-stat" style={{ color: absent > 0 ? gColor(2) : gColor(5) }}>
                     {absent}
+                  </td>
+                  <td className="att-stat" style={{ color: attendancePercent >= 75 ? gColor(5) : gColor(2) }}>
+                    {attendancePercent}%
                   </td>
                 </tr>
               )
@@ -561,11 +645,12 @@ function FinalTab({ students, grades, finalOverride, onFin }: FinalTabProps) {
 }
 
 // Main JournalContainer
-const TABS = ['Journal', 'Attendance', 'Final Grades'] as const
+const TABS = ['Journal'] as const
 
 export default function JournalContainer() {
   const [tab, setTab] = useState(0)
   const [selectedClassId, setSelectedClassId] = useState('')
+  const [selectedSubjectId, setSelectedSubjectId] = useState('')
 
   const [students, setStudents] = useState<Student[]>([])
   const [dates, setDates] = useState<DateEntry[]>([])
@@ -584,6 +669,12 @@ export default function JournalContainer() {
   const subjects = loadSubjects()
   const periods = loadPeriods()
 
+  // Get available subjects for selected class
+  const selectedClass = classes.find(c => c.id === selectedClassId)
+  const availableSubjects = selectedClass?.subjectIds
+    ? subjects.filter(s => selectedClass.subjectIds?.includes(s.id))
+    : []
+
   // Auto-select first class on mount
   useEffect(() => {
     if (!selectedClassId && classes.length > 0) {
@@ -591,14 +682,21 @@ export default function JournalContainer() {
     }
   }, [classes, selectedClassId])
 
-  // Load students when class changes
+  // Auto-select first subject when class changes
   useEffect(() => {
-    console.log('JournalContainer: Loading students for class', selectedClassId)
-    loadStudentsForClass()
+    if (selectedClassId && availableSubjects.length > 0 && !selectedSubjectId) {
+      setSelectedSubjectId(availableSubjects[0].id)
+    }
+  }, [selectedClassId, availableSubjects, selectedSubjectId])
+
+  // Load students and journal data when class or subject changes
+  useEffect(() => {
+    console.log('JournalContainer: Loading data for class', selectedClassId, 'subject', selectedSubjectId)
+    loadStudentsAndJournalData()
 
     function handleUpdate() {
       console.log('JournalContainer: students-changed event received')
-      loadStudentsForClass()
+      loadStudentsAndJournalData()
     }
 
     window.addEventListener('students-changed', handleUpdate)
@@ -607,21 +705,37 @@ export default function JournalContainer() {
       window.removeEventListener('students-changed', handleUpdate)
       window.removeEventListener('references-changed', handleUpdate)
     }
-  }, [selectedClassId])
+  }, [selectedClassId, selectedSubjectId])
 
-  function loadStudentsForClass() {
+  function loadStudentsAndJournalData() {
     if (!selectedClassId) {
       setStudents([])
+      setDates([])
+      setGrades([])
+      setAttendance([])
+      setFinalOverride({})
+      setConducted([])
       return
     }
 
+    // Load students for the class (независимо от предмета)
     const allStudents = loadStudents()
     const filtered = allStudents.filter((s) => s.classId === selectedClassId)
     console.log('Filtered students for class:', filtered)
     setStudents(filtered)
 
-    // Load or initialize journal data for this class
-    const key = `journal_class_${selectedClassId}`
+    // Load journal data only if subject is selected
+    if (!selectedSubjectId) {
+      setDates([])
+      setGrades([])
+      setAttendance([])
+      setFinalOverride({})
+      setConducted([])
+      return
+    }
+
+    // Load or initialize journal data for this class + subject combination
+    const key = `journal_${selectedClassId}_${selectedSubjectId}`
     const saved = localStorage.getItem(key)
 
     if (saved) {
@@ -656,12 +770,12 @@ export default function JournalContainer() {
 
   // Save journal data when it changes
   useEffect(() => {
-    if (!selectedClassId || students.length === 0) return
+    if (!selectedClassId || !selectedSubjectId || students.length === 0) return
 
-    const key = `journal_class_${selectedClassId}`
+    const key = `journal_${selectedClassId}_${selectedSubjectId}`
     const data = { dates, grades, attendance, finalOverride, conducted }
     localStorage.setItem(key, JSON.stringify(data))
-  }, [selectedClassId, dates, grades, attendance, finalOverride, conducted, students])
+  }, [selectedClassId, selectedSubjectId, dates, grades, attendance, finalOverride, conducted, students])
 
   function addLesson(month: string, day: number): void {
     setDates((prev) => [...prev, { m: month, d: day }])
@@ -686,6 +800,15 @@ export default function JournalContainer() {
       newGrades[si][ci] = value
       return newGrades
     })
+
+    // Автоматическая синхронизация с посещаемостью: AB → absent, остальное → present
+    setAttendance((prev) => {
+      const newAtt = [...prev]
+      if (!newAtt[si]) newAtt[si] = []
+      newAtt[si] = [...newAtt[si]]
+      newAtt[si][ci] = value.toUpperCase() === 'AB' ? 'absent' : 'present'
+      return newAtt
+    })
   }
 
   function setFin(si: number, value: number): void {
@@ -708,13 +831,19 @@ export default function JournalContainer() {
   }
 
   function saveEditStudent() {
-    if (!editingStudent) return
+    console.log('saveEditStudent called', { editingStudent, editDraft })
+    if (!editingStudent) {
+      console.log('No editing student, returning')
+      return
+    }
     const student = students[editingStudent.si]
+    console.log('Updating student:', student.id, editingStudent.field, editDraft.trim())
     updateStudent(student.id, { [editingStudent.field]: editDraft.trim() })
 
     // Reload students
-    loadStudentsForClass()
+    loadStudentsAndJournalData()
     setEditingStudent(null)
+    console.log('Student updated successfully')
   }
 
   function cancelEdit() {
@@ -759,15 +888,19 @@ export default function JournalContainer() {
     // Delete all students in this class
     students.forEach((s) => deleteStudent(s.id))
 
-    // Delete journal data for this class
-    const key = `journal_class_${selectedClassId}`
-    localStorage.removeItem(key)
+    // Delete journal data for all subjects in this class
+    const classSubjects = selectedClass?.subjectIds || []
+    classSubjects.forEach(subjectId => {
+      const key = `journal_${selectedClassId}_${subjectId}`
+      localStorage.removeItem(key)
+    })
 
     // Delete the class itself
     deleteClass(selectedClassId)
 
     // Reset
     setSelectedClassId('')
+    setSelectedSubjectId('')
     setStudents([])
     setDates([])
     setGrades([])
@@ -819,9 +952,9 @@ export default function JournalContainer() {
 
   const ready = selectedClassId && students.length > 0
 
-  // Get subject name from first student
-  const subjectName = students.length > 0 && students[0].subjectId
-    ? subjects.find(s => s.id === students[0].subjectId)?.name || ''
+  // Get subject name from selected subject
+  const subjectName = selectedSubjectId
+    ? subjects.find(s => s.id === selectedSubjectId)?.name || ''
     : ''
 
 
@@ -928,6 +1061,21 @@ export default function JournalContainer() {
             ))}
           </select>
 
+          {selectedClassId && availableSubjects.length > 0 && (
+            <select
+              value={selectedSubjectId}
+              onChange={(e) => setSelectedSubjectId(e.target.value)}
+              className="rounded-lg border border-[#DCE8F5] px-4 py-3 text-sm text-[#1D3557] outline-none transition-colors focus:border-[#457B9D]"
+            >
+              <option value="">Select Subject</option>
+              {availableSubjects.map((s) => (
+                <option key={s.id} value={s.id}>
+                  {s.name}
+                </option>
+              ))}
+            </select>
+          )}
+
           {selectedClassId && !showAddStudent && (
             <button
               onClick={() => setShowAddStudent(true)}
@@ -1008,54 +1156,40 @@ export default function JournalContainer() {
         </div>
       )}
 
-      {/* Tabs */}
-      {ready ? (
-        <>
-          <div className="flex gap-2 border-b border-[#DCE8F5]">
-            {TABS.map((t, i) => (
-              <button
-                key={t}
-                type="button"
-                onClick={() => setTab(i)}
-                className={`px-4 py-2 text-sm font-medium transition-colors ${
-                  tab === i
-                    ? 'border-b-2 border-[#457B9D] text-[#457B9D]'
-                    : 'text-[#ACACAC] hover:text-[#457B9D]'
-                }`}
-              >
-                {t}
-              </button>
-            ))}
-          </div>
+      {/* Warning if no subjects assigned */}
+      {selectedClassId && availableSubjects.length === 0 && students.length > 0 && (
+        <div className="rounded-lg bg-yellow-50 border border-yellow-200 p-4">
+          <p className="text-sm text-yellow-800">
+            ⚠️ No subjects assigned to this class. Please re-import students and select subjects.
+          </p>
+        </div>
+      )}
 
+      {/* Journal content */}
+      {ready && selectedSubjectId ? (
+        <>
           {/* Tab content */}
           <div>
-            {tab === 0 && (
-              <JournalTab
-                students={students}
-                dates={dates}
-                grades={grades}
-                finalOverride={finalOverride}
-                conducted={conducted}
-                subjectName={subjectName}
-                onGrade={setGrade}
-                onFin={setFin}
-                onAddLesson={addLesson}
-                onDelLesson={delLesson}
-                setConducted={setConducted}
-                editingStudent={editingStudent}
-                editDraft={editDraft}
-                onEditStudent={handleEditStudent}
-                onSaveEdit={saveEditStudent}
-                onCancelEdit={cancelEdit}
-                setEditDraft={setEditDraft}
-                onDeleteStudent={handleDeleteStudent}
-              />
-            )}
-            {tab === 1 && <AttendanceTab students={students} dates={dates} attendance={attendance} onSet={setAtt} />}
-            {tab === 2 && (
-              <FinalTab students={students} grades={grades} finalOverride={finalOverride} onFin={setFin} />
-            )}
+            <JournalTab
+              students={students}
+              dates={dates}
+              grades={grades}
+              finalOverride={finalOverride}
+              conducted={conducted}
+              subjectName={subjectName}
+              onGrade={setGrade}
+              onFin={setFin}
+              onAddLesson={addLesson}
+              onDelLesson={delLesson}
+              setConducted={setConducted}
+              editingStudent={editingStudent}
+              editDraft={editDraft}
+              onEditStudent={handleEditStudent}
+              onSaveEdit={saveEditStudent}
+              onCancelEdit={cancelEdit}
+              setEditDraft={setEditDraft}
+              onDeleteStudent={handleDeleteStudent}
+            />
           </div>
         </>
       ) : (
@@ -1070,10 +1204,18 @@ export default function JournalContainer() {
           </svg>
           <div className="text-center">
             <p className="text-lg font-medium text-[#1D3557]">
-              {!selectedClassId ? 'Select a class' : 'No students in this class'}
+              {!selectedClassId
+                ? 'Select a class'
+                : !selectedSubjectId
+                ? 'Select a subject'
+                : 'No students in this class'}
             </p>
             <p className="text-sm text-[#ACACAC]">
-              {!selectedClassId ? 'Choose a class from the dropdown above' : 'Import students for this class first'}
+              {!selectedClassId
+                ? 'Choose a class from the dropdown above'
+                : !selectedSubjectId
+                ? 'Choose a subject from the dropdown above'
+                : 'Import students for this class first'}
             </p>
           </div>
         </div>

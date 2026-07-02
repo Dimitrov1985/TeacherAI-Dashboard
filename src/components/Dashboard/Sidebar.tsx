@@ -1,10 +1,9 @@
-import { useRef, useState } from 'react'
+import { useRef, useState, useEffect } from 'react'
 import type { ChangeEvent } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import {
   IconHome,
   IconCourses,
-  IconExams,
   IconHomework,
   IconStudents,
   IconAttendance,
@@ -13,11 +12,12 @@ import {
   IconAlumni,
   IconPencil,
 } from './icons'
+import { loadTeacher } from '../../lib/teacherStore'
+import TeacherProfileModal from '../TeacherProfileModal'
 
 const navItems = [
   { label: 'Dashboard', icon: IconHome, path: '/' },
   { label: 'My lessons', icon: IconCourses, path: '/lessons' },
-  { label: 'Exams', icon: IconExams, path: '/exams' },
   { label: 'Homework', icon: IconHomework, path: '/homework' },
   { label: 'Students', icon: IconStudents, path: '/students' },
   { label: 'Paid Courses', icon: IconCourses, path: '/paid-courses' },
@@ -34,7 +34,27 @@ export default function Sidebar() {
   const [avatarImage, setAvatarImage] = useState<string | null>(() =>
     localStorage.getItem(AVATAR_STORAGE_KEY),
   )
+  const [teacherName, setTeacherName] = useState('')
+  const [teacherSubject, setTeacherSubject] = useState('')
+  const [showProfileModal, setShowProfileModal] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    updateTeacherInfo()
+
+    function handleTeacherChange() {
+      updateTeacherInfo()
+    }
+
+    window.addEventListener('teacher-changed', handleTeacherChange)
+    return () => window.removeEventListener('teacher-changed', handleTeacherChange)
+  }, [])
+
+  function updateTeacherInfo() {
+    const teacher = loadTeacher()
+    setTeacherName(teacher?.fullName || 'Teacher Name')
+    setTeacherSubject(teacher?.subject || 'Учитель')
+  }
 
   function handleFileChange(event: ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0]
@@ -79,9 +99,15 @@ export default function Sidebar() {
             )}
           </button>
         </div>
-        <div className="flex flex-col items-center gap-1 text-center">
-          <span className="text-base font-semibold text-[#457B9D]">Janet Smith Johnson</span>
-          <span className="text-base font-medium text-[#457B9D]">Applied Science Teacher</span>
+        <div className="flex flex-col items-center gap-0.5 text-center">
+          <button
+            onClick={() => setShowProfileModal(true)}
+            className="text-sm font-medium text-[#1D3557] hover:underline cursor-pointer"
+            title="Click to edit your profile"
+          >
+            {teacherName}
+          </button>
+          <span className="text-xs font-normal text-[#ACACAC]">{teacherSubject}</span>
         </div>
       </div>
 
@@ -104,6 +130,11 @@ export default function Sidebar() {
           )
         })}
       </nav>
+
+      {/* Teacher Profile Modal */}
+      {showProfileModal && (
+        <TeacherProfileModal onClose={() => setShowProfileModal(false)} />
+      )}
     </aside>
   )
 }

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { AuthProvider } from './context/AuthContext'
 import ProtectedRoute from './components/ProtectedRoute'
@@ -6,12 +6,19 @@ import Sidebar from './components/Dashboard/Sidebar'
 import RightPanel from './components/Dashboard/RightPanel'
 import DashboardPage from './pages/DashboardPage'
 import LessonsPage from './pages/LessonsPage'
+import StudentsPage from './pages/StudentsPage'
 import ProfilePage from './pages/ProfilePage'
 import LoginPage from './pages/LoginPage'
 import SignUpPage from './pages/SignUpPage'
 import { addMonths } from './lib/date'
+import { initializeDemoStudents } from './data/initialStudents'
+import { initializeTeacher } from './lib/teacherStore'
 
 function MainLayout() {
+  // Initialize teacher profile on mount
+  useEffect(() => {
+    initializeTeacher()
+  }, [])
   const [today] = useState(() => new Date())
   const [month, setMonth] = useState(() => new Date(today.getFullYear(), today.getMonth(), 1))
   const [selectedDate, setSelectedDate] = useState(today)
@@ -27,10 +34,9 @@ function MainLayout() {
       <Routes>
         <Route path="/" element={<DashboardPage />} />
         <Route path="/lessons" element={<LessonsPage />} />
+        <Route path="/students" element={<StudentsPage />} />
         <Route path="/profile" element={<ProfilePage />} />
-          <Route path="/exams" element={<div className="flex-1 p-8"><h1 className="text-2xl font-bold text-[#1D3557]">Exams (Coming Soon)</h1></div>} />
           <Route path="/homework" element={<div className="flex-1 p-8"><h1 className="text-2xl font-bold text-[#1D3557]">Homework (Coming Soon)</h1></div>} />
-          <Route path="/students" element={<div className="flex-1 p-8"><h1 className="text-2xl font-bold text-[#1D3557]">Students (Coming Soon)</h1></div>} />
           <Route path="/paid-courses" element={<div className="flex-1 p-8"><h1 className="text-2xl font-bold text-[#1D3557]">Paid Courses (Coming Soon)</h1></div>} />
           <Route path="/attendance" element={<div className="flex-1 p-8"><h1 className="text-2xl font-bold text-[#1D3557]">Attendance (Coming Soon)</h1></div>} />
           <Route path="/duties" element={<div className="flex-1 p-8"><h1 className="text-2xl font-bold text-[#1D3557]">Duties (Coming Soon)</h1></div>} />
@@ -49,6 +55,11 @@ function MainLayout() {
 }
 
 function App() {
+  useEffect(() => {
+    // Initialize demo students on first load
+    initializeDemoStudents()
+  }, [])
+
   return (
     <AuthProvider>
       <BrowserRouter>
