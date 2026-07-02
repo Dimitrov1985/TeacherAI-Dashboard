@@ -979,9 +979,9 @@ export default function JournalContainer() {
         .btn-ghost:hover{background:var(--bg);opacity:1}
         .date-inp{padding:5px 9px;border:0.5px solid var(--border-s);border-radius:var(--r-sm);background:var(--surface)}
         .tbl-wrap{overflow-x:auto;border:1px solid var(--border-s);border-radius:var(--r)}
-        table{border-collapse:collapse;width:auto;min-width:700px}
+        table{border-collapse:collapse;table-layout:fixed;width:auto}
         th,td{border:0.5px solid var(--border);padding:0;text-align:center;white-space:nowrap}
-        .th-name{text-align:left;padding:6px 11px;background:var(--accent-bg);color:var(--accent);font-weight:500;font-size:12px;min-width:227px;max-width:227px;width:227px;position:sticky;left:0;z-index:3}
+        .th-name{text-align:left;padding:6px 11px;background:var(--accent-bg);color:var(--accent);font-weight:500;font-size:12px;min-width:245px;max-width:245px;width:245px;position:sticky;left:0;z-index:3}
         .th-month{background:var(--accent-bg);color:var(--accent);font-weight:500;font-size:11px;padding:4px 6px;min-width:26px}
         .th-day{background:#f0f4f8;font-size:11px;color:var(--text2);font-weight:400;padding:3px 2px;min-width:26px;position:relative}
         .th-day .del-btn{display:none;font-size:10px;color:var(--g2);cursor:pointer;background:none;border:none;padding:0;line-height:1}
@@ -993,7 +993,7 @@ export default function JournalContainer() {
         .cb.checked::after{content:'✓';color:white;font-size:10px;font-weight:700}
         .th-sum{background:var(--accent-bg);color:var(--accent);font-size:11px;font-weight:500;padding:4px 5px;min-width:56px}
         .sep-col{background:#ebebea!important;width:5px;padding:0;border:none}
-        .td-name{text-align:left;padding:4px 11px;font-size:12px;background:var(--surface);min-width:227px;max-width:227px;width:227px;position:sticky;left:0;z-index:1}
+        .td-name{text-align:left;padding:4px 11px;font-size:12px;background:var(--surface);min-width:245px;max-width:245px;width:245px;position:sticky;left:0;z-index:1}
         .row-alt td{background:var(--surface1)}.row-alt .td-name{background:var(--surface1)}
         tbody tr:hover td{background:var(--accent-bg)!important}
         .g-cell{width:26px;height:26px;text-align:center;vertical-align:middle;cursor:pointer;padding:0;position:relative}
