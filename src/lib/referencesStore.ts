@@ -1,16 +1,20 @@
 import type { Class, Subject, Period, Teacher } from '../data/references'
 import { INITIAL_CLASSES, INITIAL_SUBJECTS, INITIAL_PERIODS, INITIAL_TEACHERS } from '../data/references'
+import { getCurrentUserId } from './auth'
 
-const CLASSES_KEY = 'teacher-dashboard:classes'
-const SUBJECTS_KEY = 'teacher-dashboard:subjects'
-const PERIODS_KEY = 'teacher-dashboard:periods'
-const TEACHERS_KEY = 'teacher-dashboard:teachers'
+const getClassesKey = (userId: string) => `teacher-dashboard:${userId}:classes`
+const getSubjectsKey = (userId: string) => `teacher-dashboard:${userId}:subjects`
+const getPeriodsKey = (userId: string) => `teacher-dashboard:${userId}:periods`
+const getTeachersKey = (userId: string) => `teacher-dashboard:${userId}:teachers`
 
 // ==================== CLASSES ====================
 
 export function loadClasses(): Class[] {
+  const userId = getCurrentUserId()
+  if (!userId) return INITIAL_CLASSES
+
   try {
-    const raw = localStorage.getItem(CLASSES_KEY)
+    const raw = localStorage.getItem(getClassesKey(userId))
     return raw ? JSON.parse(raw) : INITIAL_CLASSES
   } catch {
     return INITIAL_CLASSES
@@ -18,26 +22,45 @@ export function loadClasses(): Class[] {
 }
 
 export function saveClasses(classes: Class[]): void {
-  localStorage.setItem(CLASSES_KEY, JSON.stringify(classes))
+  const userId = getCurrentUserId()
+  if (!userId) {
+    console.warn('Cannot save classes: No user logged in')
+    return
+  }
+
+  localStorage.setItem(getClassesKey(userId), JSON.stringify(classes))
   window.dispatchEvent(new Event('references-changed'))
 }
 
-export function addClass(name: string): Class {
+export function addClass(name: string, subjectIds?: string[]): Class {
   const classes = loadClasses()
   const newClass: Class = {
     id: Date.now().toString(),
     name: name.trim(),
+    subjectIds: subjectIds || [],
   }
   classes.push(newClass)
   saveClasses(classes)
   return newClass
 }
 
-export function updateClass(id: string, name: string): void {
+export function updateClass(id: string, name: string, subjectIds?: string[]): void {
   const classes = loadClasses()
   const index = classes.findIndex((c) => c.id === id)
   if (index !== -1) {
     classes[index].name = name.trim()
+    if (subjectIds !== undefined) {
+      classes[index].subjectIds = subjectIds
+    }
+    saveClasses(classes)
+  }
+}
+
+export function updateClassSubjects(id: string, subjectIds: string[]): void {
+  const classes = loadClasses()
+  const index = classes.findIndex((c) => c.id === id)
+  if (index !== -1) {
+    classes[index].subjectIds = subjectIds
     saveClasses(classes)
   }
 }
@@ -50,8 +73,11 @@ export function deleteClass(id: string): void {
 // ==================== SUBJECTS ====================
 
 export function loadSubjects(): Subject[] {
+  const userId = getCurrentUserId()
+  if (!userId) return INITIAL_SUBJECTS
+
   try {
-    const raw = localStorage.getItem(SUBJECTS_KEY)
+    const raw = localStorage.getItem(getSubjectsKey(userId))
     return raw ? JSON.parse(raw) : INITIAL_SUBJECTS
   } catch {
     return INITIAL_SUBJECTS
@@ -59,7 +85,13 @@ export function loadSubjects(): Subject[] {
 }
 
 export function saveSubjects(subjects: Subject[]): void {
-  localStorage.setItem(SUBJECTS_KEY, JSON.stringify(subjects))
+  const userId = getCurrentUserId()
+  if (!userId) {
+    console.warn('Cannot save subjects: No user logged in')
+    return
+  }
+
+  localStorage.setItem(getSubjectsKey(userId), JSON.stringify(subjects))
   window.dispatchEvent(new Event('references-changed'))
 }
 
@@ -91,8 +123,11 @@ export function deleteSubject(id: string): void {
 // ==================== PERIODS ====================
 
 export function loadPeriods(): Period[] {
+  const userId = getCurrentUserId()
+  if (!userId) return INITIAL_PERIODS
+
   try {
-    const raw = localStorage.getItem(PERIODS_KEY)
+    const raw = localStorage.getItem(getPeriodsKey(userId))
     return raw ? JSON.parse(raw) : INITIAL_PERIODS
   } catch {
     return INITIAL_PERIODS
@@ -100,7 +135,13 @@ export function loadPeriods(): Period[] {
 }
 
 export function savePeriods(periods: Period[]): void {
-  localStorage.setItem(PERIODS_KEY, JSON.stringify(periods))
+  const userId = getCurrentUserId()
+  if (!userId) {
+    console.warn('Cannot save periods: No user logged in')
+    return
+  }
+
+  localStorage.setItem(getPeriodsKey(userId), JSON.stringify(periods))
   window.dispatchEvent(new Event('references-changed'))
 }
 
@@ -132,8 +173,11 @@ export function deletePeriod(id: string): void {
 // ==================== TEACHERS ====================
 
 export function loadTeachers(): Teacher[] {
+  const userId = getCurrentUserId()
+  if (!userId) return INITIAL_TEACHERS
+
   try {
-    const raw = localStorage.getItem(TEACHERS_KEY)
+    const raw = localStorage.getItem(getTeachersKey(userId))
     return raw ? JSON.parse(raw) : INITIAL_TEACHERS
   } catch {
     return INITIAL_TEACHERS
@@ -141,7 +185,13 @@ export function loadTeachers(): Teacher[] {
 }
 
 export function saveTeachers(teachers: Teacher[]): void {
-  localStorage.setItem(TEACHERS_KEY, JSON.stringify(teachers))
+  const userId = getCurrentUserId()
+  if (!userId) {
+    console.warn('Cannot save teachers: No user logged in')
+    return
+  }
+
+  localStorage.setItem(getTeachersKey(userId), JSON.stringify(teachers))
   window.dispatchEvent(new Event('references-changed'))
 }
 

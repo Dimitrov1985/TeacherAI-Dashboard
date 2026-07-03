@@ -1,9 +1,13 @@
 import type { CalendarNote } from '../data/notes'
+import { getCurrentUserId } from './auth'
 
-const NOTES_STORAGE_KEY = 'teacher-dashboard:calendar-notes'
+const getNotesKey = (userId: string) => `teacher-dashboard:${userId}:calendar-notes`
 
 export function loadNotes(): CalendarNote[] {
-  const raw = localStorage.getItem(NOTES_STORAGE_KEY)
+  const userId = getCurrentUserId()
+  if (!userId) return []
+
+  const raw = localStorage.getItem(getNotesKey(userId))
   if (!raw) return []
   try {
     const parsed = JSON.parse(raw)
@@ -15,7 +19,13 @@ export function loadNotes(): CalendarNote[] {
 }
 
 export function saveNotes(notes: CalendarNote[]): void {
-  localStorage.setItem(NOTES_STORAGE_KEY, JSON.stringify(notes))
+  const userId = getCurrentUserId()
+  if (!userId) {
+    console.warn('Cannot save notes: No user logged in')
+    return
+  }
+
+  localStorage.setItem(getNotesKey(userId), JSON.stringify(notes))
 }
 
 export function addNote(note: CalendarNote): CalendarNote[] {

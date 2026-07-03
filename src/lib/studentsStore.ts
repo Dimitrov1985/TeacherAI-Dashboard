@@ -1,14 +1,19 @@
 import type { Student, Grade, Attendance } from '../data/students'
+import { getCurrentUserId } from './auth'
 
-const STUDENTS_KEY = 'teacher-dashboard:students'
-const GRADES_KEY = 'teacher-dashboard:grades'
-const ATTENDANCE_KEY = 'teacher-dashboard:attendance'
+// Функции для генерации ключей с userId
+const getStudentsKey = (userId: string) => `teacher-dashboard:${userId}:students`
+const getGradesKey = (userId: string) => `teacher-dashboard:${userId}:grades`
+const getAttendanceKey = (userId: string) => `teacher-dashboard:${userId}:attendance`
 
 // ==================== STUDENTS ====================
 
 export function loadStudents(): Student[] {
+  const userId = getCurrentUserId()
+  if (!userId) return []
+
   try {
-    const raw = localStorage.getItem(STUDENTS_KEY)
+    const raw = localStorage.getItem(getStudentsKey(userId))
     return raw ? JSON.parse(raw) : []
   } catch {
     return []
@@ -16,7 +21,13 @@ export function loadStudents(): Student[] {
 }
 
 export function saveStudents(students: Student[]): void {
-  localStorage.setItem(STUDENTS_KEY, JSON.stringify(students))
+  const userId = getCurrentUserId()
+  if (!userId) {
+    console.warn('Cannot save students: No user logged in')
+    return
+  }
+
+  localStorage.setItem(getStudentsKey(userId), JSON.stringify(students))
   window.dispatchEvent(new Event('students-changed'))
 }
 
@@ -82,8 +93,11 @@ export function deleteClass(className: string): void {
 // ==================== GRADES ====================
 
 export function loadGrades(): Grade[] {
+  const userId = getCurrentUserId()
+  if (!userId) return []
+
   try {
-    const raw = localStorage.getItem(GRADES_KEY)
+    const raw = localStorage.getItem(getGradesKey(userId))
     return raw ? JSON.parse(raw) : []
   } catch {
     return []
@@ -91,7 +105,13 @@ export function loadGrades(): Grade[] {
 }
 
 export function saveGrades(grades: Grade[]): void {
-  localStorage.setItem(GRADES_KEY, JSON.stringify(grades))
+  const userId = getCurrentUserId()
+  if (!userId) {
+    console.warn('Cannot save grades: No user logged in')
+    return
+  }
+
+  localStorage.setItem(getGradesKey(userId), JSON.stringify(grades))
   window.dispatchEvent(new Event('grades-changed'))
 }
 
@@ -132,8 +152,11 @@ export function getAverageGrade(studentId: string, subject?: string): number {
 // ==================== ATTENDANCE ====================
 
 export function loadAttendance(): Attendance[] {
+  const userId = getCurrentUserId()
+  if (!userId) return []
+
   try {
-    const raw = localStorage.getItem(ATTENDANCE_KEY)
+    const raw = localStorage.getItem(getAttendanceKey(userId))
     return raw ? JSON.parse(raw) : []
   } catch {
     return []
@@ -141,7 +164,13 @@ export function loadAttendance(): Attendance[] {
 }
 
 export function saveAttendance(attendance: Attendance[]): void {
-  localStorage.setItem(ATTENDANCE_KEY, JSON.stringify(attendance))
+  const userId = getCurrentUserId()
+  if (!userId) {
+    console.warn('Cannot save attendance: No user logged in')
+    return
+  }
+
+  localStorage.setItem(getAttendanceKey(userId), JSON.stringify(attendance))
   window.dispatchEvent(new Event('attendance-changed'))
 }
 

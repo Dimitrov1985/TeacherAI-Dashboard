@@ -52,10 +52,24 @@ export default function GenerateLessonModal({ onClose, onGenerate }: GenerateLes
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ imageDataUrl: preview }),
       })
-      const data = await response.json()
+
+      // Сначала проверяем статус
       if (!response.ok) {
-        throw new Error(data.error ?? 'Failed to generate lesson plan')
+        throw new Error(`HTTP error: ${response.status}`)
       }
+
+      // Читаем как текст
+      const text = await response.text()
+      if (!text) {
+        throw new Error('Empty response from server')
+      }
+
+      // Парсим JSON
+      const data = JSON.parse(text)
+      if (!data.plan) {
+        throw new Error('Invalid response format')
+      }
+
       const plan = data.plan as GeneratedLessonPlan
       onGenerate(plan)
     } catch (err) {

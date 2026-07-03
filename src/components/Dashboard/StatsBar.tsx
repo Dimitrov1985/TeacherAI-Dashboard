@@ -3,14 +3,18 @@ import { IconCoursesStat, IconClassesStat, IconStudentsStat } from './icons'
 
 const STORAGE_PREFIX = 'teacher-dashboard:materials:'
 const LESSONS_STORAGE_KEY = 'teacher-dashboard:lessons'
+const STUDENTS_STORAGE_KEY = 'teacher-dashboard:students'
+const CLASSES_STORAGE_KEY = 'teacher-dashboard:classes'
 
 export default function StatsBar() {
   const [lessonPlansCount, setLessonPlansCount] = useState(0)
   const [classesCount, setClassesCount] = useState(0)
+  const [studentsCount, setStudentsCount] = useState(0)
 
   useEffect(() => {
     updateLessonPlansCount()
     updateClassesCount()
+    updateStudentsCount()
 
     function handleMaterialsChange() {
       updateLessonPlansCount()
@@ -20,11 +24,23 @@ export default function StatsBar() {
       updateClassesCount()
     }
 
+    function handleStudentsChange() {
+      updateStudentsCount()
+    }
+
+    function handleReferencesChange() {
+      updateClassesCount()
+    }
+
     window.addEventListener('materials-changed', handleMaterialsChange)
     window.addEventListener('lessons-changed', handleLessonsChange)
+    window.addEventListener('students-changed', handleStudentsChange)
+    window.addEventListener('references-changed', handleReferencesChange)
     return () => {
       window.removeEventListener('materials-changed', handleMaterialsChange)
       window.removeEventListener('lessons-changed', handleLessonsChange)
+      window.removeEventListener('students-changed', handleStudentsChange)
+      window.removeEventListener('references-changed', handleReferencesChange)
     }
   }, [])
 
@@ -50,11 +66,11 @@ export default function StatsBar() {
 
   function updateClassesCount() {
     try {
-      const raw = localStorage.getItem(LESSONS_STORAGE_KEY)
+      const raw = localStorage.getItem(CLASSES_STORAGE_KEY)
       if (raw) {
-        const lessons = JSON.parse(raw)
-        if (Array.isArray(lessons)) {
-          setClassesCount(lessons.length)
+        const classes = JSON.parse(raw)
+        if (Array.isArray(classes)) {
+          setClassesCount(classes.length)
           return
         }
       }
@@ -64,10 +80,26 @@ export default function StatsBar() {
     setClassesCount(0)
   }
 
+  function updateStudentsCount() {
+    try {
+      const raw = localStorage.getItem(STUDENTS_STORAGE_KEY)
+      if (raw) {
+        const students = JSON.parse(raw)
+        if (Array.isArray(students)) {
+          setStudentsCount(students.length)
+          return
+        }
+      }
+    } catch {
+      // ignore malformed data
+    }
+    setStudentsCount(0)
+  }
+
   const stats = [
     { label: 'My lessons', value: lessonPlansCount, icon: IconCoursesStat, accent: '#EC6B47' },
     { label: 'Classes', value: classesCount, icon: IconClassesStat, accent: '#38C381' },
-    { label: 'Students', value: 120, icon: IconStudentsStat, accent: '#116CBD' },
+    { label: 'Students', value: studentsCount, icon: IconStudentsStat, accent: '#116CBD' },
   ]
 
   return (

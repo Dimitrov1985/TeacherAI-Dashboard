@@ -2,6 +2,7 @@
 export type Class = {
   id: string
   name: string
+  subjectIds?: string[] // Привязанные предметы (многие-ко-многим)
 }
 
 export type Subject = {

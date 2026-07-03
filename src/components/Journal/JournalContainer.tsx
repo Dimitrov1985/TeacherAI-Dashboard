@@ -2,6 +2,9 @@ import React, { useState, useEffect, useMemo, useRef } from 'react'
 import { loadClasses, loadSubjects, loadPeriods, deleteClass } from '../../lib/referencesStore'
 import { loadStudents, updateStudent, deleteStudent, addStudent } from '../../lib/studentsStore'
 import type { Student } from '../../data/students'
+import PrintSettingsModal from './PrintSettingsModal'
+import { openPrintWindow, type PrintData } from '../../lib/printJournal'
+import { getCurrentUserId } from '../../lib/auth'
 
 // Types
 type ColumnType = 'lesson' | 'test' | 'exam' | 'homework'
@@ -786,6 +789,7 @@ export default function JournalContainer() {
   const [newStudentId, setNewStudentId] = useState('')
   const [newStudentFirstName, setNewStudentFirstName] = useState('')
   const [newStudentLastName, setNewStudentLastName] = useState('')
+  const [showPrintSettings, setShowPrintSettings] = useState(false)
 
   const classes = loadClasses()
   const subjects = loadSubjects()
@@ -857,7 +861,10 @@ export default function JournalContainer() {
     }
 
     // Load or initialize journal data for this class + subject combination
-    const key = `journal_${selectedClassId}_${selectedSubjectId}`
+    const userId = getCurrentUserId()
+    if (!userId) return
+
+    const key = `journal_${userId}_${selectedClassId}_${selectedSubjectId}`
     const saved = localStorage.getItem(key)
 
     if (saved) {
@@ -907,7 +914,10 @@ export default function JournalContainer() {
   useEffect(() => {
     if (!selectedClassId || !selectedSubjectId || students.length === 0) return
 
-    const key = `journal_${selectedClassId}_${selectedSubjectId}`
+    const userId = getCurrentUserId()
+    if (!userId) return
+
+    const key = `journal_${userId}_${selectedClassId}_${selectedSubjectId}`
     const data = { dates, grades, attendance, finalOverride, conducted }
     localStorage.setItem(key, JSON.stringify(data))
     console.log('Journal data saved:', key, data)
@@ -1029,11 +1039,14 @@ export default function JournalContainer() {
     students.forEach((s) => deleteStudent(s.id))
 
     // Delete journal data for all subjects in this class
-    const classSubjects = selectedClass?.subjectIds || []
-    classSubjects.forEach(subjectId => {
-      const key = `journal_${selectedClassId}_${subjectId}`
-      localStorage.removeItem(key)
-    })
+    const userId = getCurrentUserId()
+    if (userId) {
+      const classSubjects = selectedClass?.subjectIds || []
+      classSubjects.forEach(subjectId => {
+        const key = `journal_${userId}_${selectedClassId}_${subjectId}`
+        localStorage.removeItem(key)
+      })
+    }
 
     // Delete the class itself
     deleteClass(selectedClassId)
@@ -1087,7 +1100,7 @@ export default function JournalContainer() {
     setShowAddStudent(false)
 
     // Reload students
-    loadStudentsForClass()
+    loadStudentsAndJournalData()
   }
 
   const ready = selectedClassId && students.length > 0
@@ -1097,6 +1110,33 @@ export default function JournalContainer() {
     ? subjects.find(s => s.id === selectedSubjectId)?.name || ''
     : ''
 
+  function handlePrint(settings: {
+    selectedStudentId: string
+    showAllGrades: boolean
+    showAttendance: boolean
+  }) {
+    const className = classes.find((c) => c.id === selectedClassId)?.name || ''
+    const periodName = new Date().toLocaleDateString('ru-RU', {
+      month: 'long',
+      year: 'numeric',
+    })
+
+    const printData: PrintData = {
+      className,
+      subjectName,
+      periodName,
+      students,
+      dates,
+      grades,
+      finalOverride,
+      showAllGrades: settings.showAllGrades,
+      showAttendance: settings.showAttendance,
+      attendance,
+      selectedStudentId: settings.selectedStudentId,
+    }
+
+    openPrintWindow(printData)
+  }
 
   return (
     <div className="flex flex-1 flex-col gap-6">
@@ -1283,21 +1323,35 @@ export default function JournalContainer() {
           )}
 
           {ready && (
-            <button
-              onClick={handleDeleteClass}
-              className="ml-auto flex items-center gap-2 rounded-lg border-2 border-red-500 px-4 py-3 text-sm font-medium text-red-500 transition-colors hover:bg-red-500 hover:text-white"
-              title="Delete this class"
-            >
-              <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+            <div className="ml-auto flex gap-3">
+              <button
+                onClick={() => setShowPrintSettings(true)}
+                className="flex items-center gap-2 rounded-lg border border-[#457B9D] px-4 py-3 text-sm font-medium text-[#457B9D] transition-colors hover:bg-[#457B9D] hover:text-white"
+                title="Печать журнала"
+              >
+                <img
+                  src="/printer-icon.png"
+                  alt="Печать"
+                  className="h-5 w-5"
                 />
-              </svg>
-              Delete Class
-            </button>
+                Печать
+              </button>
+              <button
+                onClick={handleDeleteClass}
+                className="flex items-center gap-2 rounded-lg border-2 border-red-500 px-4 py-3 text-sm font-medium text-red-500 transition-colors hover:bg-red-500 hover:text-white"
+                title="Delete this class"
+              >
+                <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                  />
+                </svg>
+                Delete Class
+              </button>
+            </div>
           )}
         </div>
       )}
@@ -1365,6 +1419,15 @@ export default function JournalContainer() {
             </p>
           </div>
         </div>
+      )}
+
+      {/* Print Settings Modal */}
+      {showPrintSettings && (
+        <PrintSettingsModal
+          students={students}
+          onPrint={handlePrint}
+          onClose={() => setShowPrintSettings(false)}
+        />
       )}
     </div>
   )

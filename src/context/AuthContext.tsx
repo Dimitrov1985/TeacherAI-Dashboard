@@ -51,12 +51,31 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     // Simulate API call
     await new Promise((resolve) => setTimeout(resolve, 1000))
 
-    // Mock user data
-    const userData: User = {
-      id: '1',
-      firstName: 'John',
-      lastName: 'Doe',
-      email: email,
+    // Generate unique userId from email (hash-like approach)
+    const userId = `user-${btoa(email).replace(/=/g, '').substring(0, 12)}`
+
+    // Check if user already exists in a separate registry
+    const existingUsersKey = 'teacher-dashboard:users-registry'
+    const registryRaw = localStorage.getItem(existingUsersKey)
+    const registry: Record<string, User> = registryRaw ? JSON.parse(registryRaw) : {}
+
+    let userData: User
+
+    if (registry[email]) {
+      // User exists - load their data
+      userData = registry[email]
+      console.log('✅ Existing user logged in:', email, '→ userId:', userData.id)
+    } else {
+      // New user - create account
+      userData = {
+        id: userId,
+        firstName: email.split('@')[0], // Use email prefix as default name
+        lastName: '',
+        email: email,
+      }
+      registry[email] = userData
+      localStorage.setItem(existingUsersKey, JSON.stringify(registry))
+      console.log('🆕 New user created:', email, '→ userId:', userId)
     }
 
     setUser(userData)
@@ -67,12 +86,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     // Simulate API call
     await new Promise((resolve) => setTimeout(resolve, 1500))
 
+    // Generate unique userId from email
+    const userId = `user-${btoa(data.email).replace(/=/g, '').substring(0, 12)}`
+
     const userData: User = {
-      id: Date.now().toString(),
+      id: userId,
       firstName: data.firstName,
       lastName: data.lastName,
       email: data.email,
     }
+
+    // Save to registry
+    const existingUsersKey = 'teacher-dashboard:users-registry'
+    const registryRaw = localStorage.getItem(existingUsersKey)
+    const registry: Record<string, User> = registryRaw ? JSON.parse(registryRaw) : {}
+    registry[data.email] = userData
+    localStorage.setItem(existingUsersKey, JSON.stringify(registry))
+
+    console.log('🆕 User registered:', data.email, '→ userId:', userId)
 
     setUser(userData)
     localStorage.setItem(STORAGE_KEY, JSON.stringify(userData))
@@ -81,6 +112,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   function logout() {
     setUser(null)
     localStorage.removeItem(STORAGE_KEY)
+    // ВАЖНО: НЕ очищаем данные пользователя (students, grades, etc.)
+    // Они остаются в localStorage и загрузятся при повторном логине
   }
 
   function updateProfile(data: Partial<User>) {

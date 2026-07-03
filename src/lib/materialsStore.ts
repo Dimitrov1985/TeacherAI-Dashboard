@@ -1,9 +1,10 @@
 import type { Material } from "../data/lessonDetails";
-
-const STORAGE_PREFIX = "teacher-dashboard:materials:";
+import { getCurrentUserId } from './auth'
 
 function storageKey(lessonId: string): string {
-  return `${STORAGE_PREFIX}${lessonId}`;
+  const userId = getCurrentUserId()
+  if (!userId) return `teacher-dashboard:materials:${lessonId}`
+  return `teacher-dashboard:${userId}:materials:${lessonId}`;
 }
 
 export function loadMaterials(lessonId: string, defaults: Material[]): Material[] {

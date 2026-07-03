@@ -93,6 +93,9 @@ export default function LessonDetailModal({ lesson, onClose, onEdit }: LessonDet
           </div>
           <div className="flex flex-col">
             <span className="text-base font-semibold text-[#1D3557]">{lesson.title}</span>
+            {lesson.class && (
+              <span className="text-xs text-[#457B9D] opacity-80">{lesson.class}</span>
+            )}
             <span className="flex items-center gap-1 text-xs text-[#457B9D]">
               <IconClock className="h-3 w-3" />
               {lesson.start} – {lesson.end}

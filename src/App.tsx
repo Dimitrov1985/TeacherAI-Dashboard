@@ -13,11 +13,23 @@ import SignUpPage from './pages/SignUpPage'
 import { addMonths } from './lib/date'
 import { initializeDemoStudents } from './data/initialStudents'
 import { initializeTeacher } from './lib/teacherStore'
+import { getCurrentUserId } from './lib/auth'
+import { migrateUserData, wasMigrated, markMigrationDone } from './lib/migrateData'
 
 function MainLayout() {
   // Initialize teacher profile on mount
   useEffect(() => {
     initializeTeacher()
+  }, [])
+
+  // Migrate old data to new format with userId
+  useEffect(() => {
+    const userId = getCurrentUserId()
+    if (userId && !wasMigrated(userId)) {
+      console.log('🔄 First login after update - migrating data...')
+      migrateUserData()
+      markMigrationDone(userId)
+    }
   }, [])
   const [today] = useState(() => new Date())
   const [month, setMonth] = useState(() => new Date(today.getFullYear(), today.getMonth(), 1))

@@ -1,16 +1,16 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node'
-import Anthropic from '@anthropic-ai/sdk'
+import { GoogleGenerativeAI } from '@google/generative-ai'
 
-const MODEL = 'claude-sonnet-4-6'
+const MODEL = 'gemini-2.0-flash-exp' // Free tier model with vision support
 
 type GeneratePlanRequestBody = {
   imageDataUrl?: string
 }
 
-function parseDataUrl(dataUrl: string): { mediaType: string; base64: string } | null {
+function parseDataUrl(dataUrl: string): { mimeType: string; base64: string } | null {
   const match = /^data:(image\/[a-zA-Z+]+);base64,(.+)$/.exec(dataUrl)
   if (!match) return null
-  return { mediaType: match[1], base64: match[2] }
+  return { mimeType: match[1], base64: match[2] }
 }
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
@@ -19,9 +19,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return
   }
 
-  const apiKey = process.env.ANTHROPIC_API_KEY
+  const apiKey = process.env.GOOGLE_API_KEY
   if (!apiKey) {
-    res.status(500).json({ error: 'ANTHROPIC_API_KEY is not configured on the server' })
+    res.status(500).json({ error: 'GOOGLE_API_KEY is not configured on the server' })
     return
   }
 
@@ -38,26 +38,18 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   try {
-    const client = new Anthropic({ apiKey })
+    const genAI = new GoogleGenerativeAI(apiKey)
+    const model = genAI.getGenerativeModel({ model: MODEL })
 
-    const message = await client.messages.create({
-      model: MODEL,
-      max_tokens: 2048,
-      messages: [
-        {
-          role: 'user',
-          content: [
-            {
-              type: 'image',
-              source: {
-                type: 'base64',
-                media_type: parsed.mediaType as 'image/jpeg' | 'image/png' | 'image/gif' | 'image/webp',
-                data: parsed.base64,
-              },
-            },
-            {
-              type: 'text',
-              text: `You are an assistant for a school teacher. Read the textbook page in the photo and produce a complete lesson plan based on it.
+    const result = await model.generateContent([
+      {
+        inlineData: {
+          data: parsed.base64,
+          mimeType: parsed.mimeType,
+        },
+      },
+      {
+        text: `You are an assistant for a school teacher. Read the textbook page in the photo and produce a complete lesson plan based on it.
 
 Respond with ONLY valid JSON, no markdown fences, matching exactly this shape:
 {
@@ -69,19 +61,18 @@ Respond with ONLY valid JSON, no markdown fences, matching exactly this shape:
 }
 
 Include at least 5 flashcards covering the key terms/concepts from the page.`,
-            },
-          ],
-        },
-      ],
-    })
+      },
+    ])
 
-    const textBlock = message.content.find((block) => block.type === 'text')
-    if (!textBlock || textBlock.type !== 'text') {
-      res.status(502).json({ error: 'No text response from the model' })
+    const response = await result.response
+    const text = response.text()
+
+    if (!text) {
+      res.status(502).json({ error: 'No response from the model' })
       return
     }
 
-    const jsonText = textBlock.text.trim().replace(/^```json\s*|\s*```$/g, '')
+    const jsonText = text.trim().replace(/^```json\s*|\s*```$/g, '')
     const plan = JSON.parse(jsonText)
 
     res.status(200).json({ plan })

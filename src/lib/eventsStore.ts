@@ -1,9 +1,13 @@
 import type { CalendarEvent } from '../data/events'
+import { getCurrentUserId } from './auth'
 
-const EVENTS_STORAGE_KEY = 'teacher-dashboard:calendar-events'
+const getEventsKey = (userId: string) => `teacher-dashboard:${userId}:calendar-events`
 
 export function loadEvents(): CalendarEvent[] {
-  const raw = localStorage.getItem(EVENTS_STORAGE_KEY)
+  const userId = getCurrentUserId()
+  if (!userId) return []
+
+  const raw = localStorage.getItem(getEventsKey(userId))
   if (!raw) return []
   try {
     const parsed = JSON.parse(raw)
@@ -15,7 +19,13 @@ export function loadEvents(): CalendarEvent[] {
 }
 
 export function saveEvents(events: CalendarEvent[]): void {
-  localStorage.setItem(EVENTS_STORAGE_KEY, JSON.stringify(events))
+  const userId = getCurrentUserId()
+  if (!userId) {
+    console.warn('Cannot save events: No user logged in')
+    return
+  }
+
+  localStorage.setItem(getEventsKey(userId), JSON.stringify(events))
 }
 
 export function addEvent(event: CalendarEvent): CalendarEvent[] {

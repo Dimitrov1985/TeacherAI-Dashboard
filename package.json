@@ -11,8 +11,10 @@
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.106.0",
+    "@google/generative-ai": "^0.24.1",
     "docx": "^9.7.1",
     "file-saver": "^2.0.5",
+    "openai": "^6.45.0",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
     "react-router-dom": "^7.18.0"

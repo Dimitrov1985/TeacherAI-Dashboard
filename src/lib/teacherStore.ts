@@ -1,4 +1,6 @@
-const TEACHER_KEY = 'teacher-dashboard:teacher'
+import { getCurrentUserId } from './auth'
+
+const getTeacherKey = (userId: string) => `teacher-dashboard:${userId}:teacher`
 
 export type TeacherProfile = {
   id: string
@@ -7,8 +9,11 @@ export type TeacherProfile = {
 }
 
 export function loadTeacher(): TeacherProfile | null {
+  const userId = getCurrentUserId()
+  if (!userId) return null
+
   try {
-    const raw = localStorage.getItem(TEACHER_KEY)
+    const raw = localStorage.getItem(getTeacherKey(userId))
     return raw ? JSON.parse(raw) : null
   } catch {
     return null
@@ -16,7 +21,13 @@ export function loadTeacher(): TeacherProfile | null {
 }
 
 export function saveTeacher(teacher: TeacherProfile): void {
-  localStorage.setItem(TEACHER_KEY, JSON.stringify(teacher))
+  const userId = getCurrentUserId()
+  if (!userId) {
+    console.warn('Cannot save teacher: No user logged in')
+    return
+  }
+
+  localStorage.setItem(getTeacherKey(userId), JSON.stringify(teacher))
   window.dispatchEvent(new Event('teacher-changed'))
 }
 

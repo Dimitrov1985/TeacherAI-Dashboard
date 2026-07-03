@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import type { Student } from '../../data/students'
-import { loadClasses, loadSubjects, loadPeriods, addClass } from '../../lib/referencesStore'
+import { loadClasses, loadSubjects, loadPeriods, addClass, updateClassSubjects } from '../../lib/referencesStore'
 import type { Subject, Period } from '../../data/references'
 
 type ImportedStudent = {
@@ -19,7 +19,7 @@ export default function BulkImportModal({ onImport, onClose }: BulkImportModalPr
   const [periods, setPeriods] = useState<Period[]>([])
 
   const [className, setClassName] = useState('')
-  const [subjectId, setSubjectId] = useState('')
+  const [selectedSubjectIds, setSelectedSubjectIds] = useState<string[]>([])
   const [periodId, setPeriodId] = useState('')
 
   const [importMethod, setImportMethod] = useState<'photo' | 'text' | null>(null)
@@ -37,7 +37,6 @@ export default function BulkImportModal({ onImport, onClose }: BulkImportModalPr
     setSubjects(loadedSubjects)
     setPeriods(loadedPeriods)
 
-    if (loadedSubjects[0]) setSubjectId(loadedSubjects[0].id)
     if (loadedPeriods[0]) setPeriodId(loadedPeriods[0].id)
   }, [])
 
@@ -57,8 +56,8 @@ export default function BulkImportModal({ onImport, onClose }: BulkImportModalPr
   }
 
   async function handleProcessImage() {
-    if (!className.trim() || !subjectId || !periodId) {
-      setError('Please enter Class, Subject and Period first')
+    if (!className.trim() || selectedSubjectIds.length === 0 || !periodId) {
+      setError('Please enter Class, select at least one Subject and Period')
       return
     }
 
@@ -106,8 +105,8 @@ export default function BulkImportModal({ onImport, onClose }: BulkImportModalPr
   }
 
   function handleProcessText() {
-    if (!className.trim() || !subjectId || !periodId) {
-      setError('Please enter Class, Subject and Period first')
+    if (!className.trim() || selectedSubjectIds.length === 0 || !periodId) {
+      setError('Please enter Class, select at least one Subject and Period first')
       return
     }
 
@@ -157,30 +156,37 @@ export default function BulkImportModal({ onImport, onClose }: BulkImportModalPr
   function handleImportAll() {
     console.log('=== handleImportAll START ===')
     console.log('className:', className)
-    console.log('subjectId:', subjectId)
+    console.log('selectedSubjectIds:', selectedSubjectIds)
     console.log('periodId:', periodId)
     console.log('parsedStudents:', parsedStudents)
 
-    if (!className.trim() || !subjectId || !periodId || parsedStudents.length === 0) {
-      setError('Please enter Class, Subject, Period and add students')
+    if (!className.trim() || selectedSubjectIds.length === 0 || !periodId || parsedStudents.length === 0) {
+      setError('Please enter Class, select at least one Subject, Period and add students')
       console.log('Validation failed!')
       return
     }
 
-    // Find or create class
+    // Find or create class with subjects
     const allClasses = loadClasses()
     let classMatch = allClasses.find(c => c.name.toLowerCase() === String(className).toLowerCase())
 
     if (!classMatch) {
-      // Create new class
-      classMatch = addClass(String(className).trim())
+      // Create new class with selected subjects
+      classMatch = addClass(String(className).trim(), selectedSubjectIds)
+    } else {
+      // Update existing class subjects (merge with existing)
+      const mergedSubjects = Array.from(new Set([...(classMatch.subjectIds || []), ...selectedSubjectIds]))
+      updateClassSubjects(classMatch.id, mergedSubjects)
     }
+
+    // Use first subject for student record (legacy compatibility)
+    const primarySubjectId = selectedSubjectIds[0]
 
     const studentsToImport = parsedStudents.map((s) => ({
       firstName: s.firstName,
       lastName: s.lastName,
       classId: classMatch!.id,
-      subjectId,
+      subjectId: primarySubjectId,
       periodId,
     }))
 
@@ -246,19 +252,27 @@ export default function BulkImportModal({ onImport, onClose }: BulkImportModalPr
             </div>
             <div>
               <label className="mb-2 block text-sm font-medium text-[#1D3557]">
-                Subject <span className="text-red-500">*</span>
+                Subjects <span className="text-red-500">*</span> <span className="text-xs text-[#ACACAC]">(select one or more)</span>
               </label>
-              <select
-                value={subjectId}
-                onChange={(e) => setSubjectId(e.target.value)}
-                className="w-full rounded-lg border border-[#DCE8F5] px-4 py-3 text-sm text-[#1D3557] outline-none transition-colors focus:border-[#457B9D]"
-              >
+              <div className="max-h-48 overflow-y-auto rounded-lg border border-[#DCE8F5] p-2">
                 {subjects.map((subj) => (
-                  <option key={subj.id} value={subj.id}>
-                    {subj.name}
-                  </option>
+                  <label key={subj.id} className="flex items-center gap-2 p-2 hover:bg-[#F8F9FA] rounded cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={selectedSubjectIds.includes(subj.id)}
+                      onChange={(e) => {
+                        if (e.target.checked) {
+                          setSelectedSubjectIds([...selectedSubjectIds, subj.id])
+                        } else {
+                          setSelectedSubjectIds(selectedSubjectIds.filter(id => id !== subj.id))
+                        }
+                      }}
+                      className="w-4 h-4 text-[#457B9D] border-[#DCE8F5] rounded focus:ring-[#457B9D]"
+                    />
+                    <span className="text-sm text-[#1D3557]">{subj.name}</span>
+                  </label>
                 ))}
-              </select>
+              </div>
             </div>
             <div>
               <label className="mb-2 block text-sm font-medium text-[#1D3557]">
