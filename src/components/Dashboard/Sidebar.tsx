@@ -1,5 +1,4 @@
-import { useRef, useState, useEffect } from 'react'
-import type { ChangeEvent } from 'react'
+import { useState, useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import {
   IconHome,
@@ -10,7 +9,6 @@ import {
   IconDuties,
   IconGrading,
   IconAlumni,
-  IconPencil,
 } from './icons'
 import { loadTeacher } from '../../lib/teacherStore'
 import TeacherProfileModal from '../TeacherProfileModal'
@@ -20,24 +18,16 @@ const navItems = [
   { label: 'My lessons', icon: IconCourses, path: '/lessons' },
   { label: 'Homework', icon: IconHomework, path: '/homework' },
   { label: 'Students', icon: IconStudents, path: '/students' },
-  { label: 'Paid Courses', icon: IconCourses, path: '/paid-courses' },
   { label: 'Attendance', icon: IconAttendance, path: '/attendance' },
   { label: 'Duties', icon: IconDuties, path: '/duties' },
   { label: 'Grading', icon: IconGrading, path: '/grading' },
   { label: 'Alumni', icon: IconAlumni, path: '/alumni' },
 ]
 
-const AVATAR_STORAGE_KEY = 'teacher-dashboard:avatar-image'
-
 export default function Sidebar() {
   const location = useLocation()
-  const [avatarImage, setAvatarImage] = useState<string | null>(() =>
-    localStorage.getItem(AVATAR_STORAGE_KEY),
-  )
   const [teacherName, setTeacherName] = useState('')
-  const [teacherSubject, setTeacherSubject] = useState('')
   const [showProfileModal, setShowProfileModal] = useState(false)
-  const fileInputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
     updateTeacherInfo()
@@ -47,67 +37,41 @@ export default function Sidebar() {
     }
 
     window.addEventListener('teacher-changed', handleTeacherChange)
-    return () => window.removeEventListener('teacher-changed', handleTeacherChange)
+    return () => {
+      window.removeEventListener('teacher-changed', handleTeacherChange)
+    }
   }, [])
 
   function updateTeacherInfo() {
     const teacher = loadTeacher()
     setTeacherName(teacher?.fullName || 'Teacher Name')
-    setTeacherSubject(teacher?.subject || 'Учитель')
-  }
-
-  function handleFileChange(event: ChangeEvent<HTMLInputElement>) {
-    const file = event.target.files?.[0]
-    if (!file) return
-    const reader = new FileReader()
-    reader.onload = () => {
-      const dataUrl = reader.result as string
-      setAvatarImage(dataUrl)
-      localStorage.setItem(AVATAR_STORAGE_KEY, dataUrl)
-    }
-    reader.readAsDataURL(file)
-    event.target.value = ''
   }
 
   return (
     <aside className="flex w-full flex-col gap-6 bg-[#DCE8F5] px-4 py-6 lg:h-full lg:w-60 lg:flex-shrink-0 lg:gap-8 lg:rounded-r-[30px] lg:overflow-y-auto">
-      <div className="flex flex-col items-center gap-4">
-        <div className="group relative">
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept="image/*"
-            onChange={handleFileChange}
-            className="hidden"
-          />
-          <button
-            type="button"
-            aria-label="Change avatar"
-            onClick={() => fileInputRef.current?.click()}
-            className="absolute -top-3 left-1/2 z-10 flex h-6 w-6 -translate-x-1/2 items-center justify-center rounded-full bg-[#457B9D] text-white opacity-0 transition-opacity group-hover:opacity-100"
-          >
-            <IconPencil className="h-3.5 w-3.5" />
-          </button>
-          <button
-            type="button"
-            aria-label="Change avatar"
-            onClick={() => fileInputRef.current?.click()}
-            className="h-20 w-20 overflow-hidden rounded-full border-4 border-[#457B9D] bg-gray-300 transition-opacity group-hover:opacity-80 lg:h-[100px] lg:w-[100px]"
-          >
-            {avatarImage && (
-              <img src={avatarImage} alt="Teacher avatar" className="h-full w-full object-cover" />
-            )}
-          </button>
-        </div>
+      <div className="flex flex-col items-center gap-3">
+        {/* TeacherHub Logo */}
+        <svg width="80" height="80" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="TeacherHub icon">
+          <circle cx="24" cy="15" r="11" fill="#F9CB32"/>
+          <circle cx="24" cy="15" r="7.5" fill="#F9E27A"/>
+          <path d="M2 24 C10 18.5, 19 18.5, 24 22 C29 18.5, 38 18.5, 46 24 L46 40 C38 34.5, 29 34.5, 24 38 C19 34.5, 10 34.5, 2 40 Z" fill="#457B9D"/>
+          <path d="M4.5 26 C11.5 21.5, 19.5 21.5, 24 24.5 L24 35.5 C19.5 32.5, 11.5 32.5, 4.5 37 Z" fill="#DCE8F5"/>
+          <path d="M43.5 26 C36.5 21.5, 28.5 21.5, 24 24.5 L24 35.5 C28.5 32.5, 36.5 32.5, 43.5 37 Z" fill="#DCE8F5"/>
+          <line x1="24" y1="24.5" x2="24" y2="35.5" stroke="#457B9D" strokeWidth="1"/>
+          <line x1="8.5" y1="27" x2="19.5" y2="25.7" stroke="#9FBFD8" strokeWidth="1.2" strokeLinecap="round"/>
+          <line x1="8.5" y1="30" x2="19.5" y2="28.7" stroke="#9FBFD8" strokeWidth="1.2" strokeLinecap="round"/>
+          <line x1="28.5" y1="25.7" x2="39.5" y2="27" stroke="#9FBFD8" strokeWidth="1.2" strokeLinecap="round"/>
+          <line x1="28.5" y1="28.7" x2="39.5" y2="30" stroke="#9FBFD8" strokeWidth="1.2" strokeLinecap="round"/>
+        </svg>
         <div className="flex flex-col items-center gap-0.5 text-center">
+          <h1 className="text-lg font-bold text-[#1D3557]">TeacherHub</h1>
           <button
             onClick={() => setShowProfileModal(true)}
-            className="text-sm font-medium text-[#1D3557] hover:underline cursor-pointer"
+            className="text-xs font-medium text-[#457B9D] hover:underline cursor-pointer"
             title="Click to edit your profile"
           >
             {teacherName}
           </button>
-          <span className="text-xs font-normal text-[#ACACAC]">{teacherSubject}</span>
         </div>
       </div>
 

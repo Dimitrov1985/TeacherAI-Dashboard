@@ -1,11 +1,19 @@
 import { Document, Packer, Paragraph, TextRun, HeadingLevel, AlignmentType, Table, TableRow, TableCell, WidthType, BorderStyle } from 'docx'
 import { saveAs } from 'file-saver'
 
+export interface DetailedActivity {
+  type: string
+  title: string
+  duration: string
+  goal: string
+  instructions: string[]
+}
+
 export interface LessonPlan {
   title: string
   objectives: string[]
   flashcards: Array<{ front: string; back: string }>
-  activities: string[]
+  activities: (string | DetailedActivity)[]
   materialsNeeded: string[]
 }
 
@@ -27,7 +35,7 @@ export async function exportLessonPlanToWord(plan: LessonPlan): Promise<void> {
 
           // Objectives Section
           new Paragraph({
-            text: 'Цели урока',
+            text: 'Lesson Objectives',
             heading: HeadingLevel.HEADING_2,
             spacing: {
               before: 300,
@@ -53,33 +61,120 @@ export async function exportLessonPlanToWord(plan: LessonPlan): Promise<void> {
 
           // Activities Section
           new Paragraph({
-            text: 'Классные активности',
+            text: 'Classroom Activities',
             heading: HeadingLevel.HEADING_2,
             spacing: {
               before: 300,
               after: 200,
             },
           }),
-          ...plan.activities.map(
-            (activity, index) =>
-              new Paragraph({
-                children: [
-                  new TextRun({
-                    text: `${index + 1}. ${activity}`,
-                  }),
-                ],
-                spacing: {
-                  after: 100,
-                },
-                bullet: {
-                  level: 0,
-                },
-              }),
-          ),
+          ...plan.activities.flatMap((activity, index) => {
+            if (typeof activity === 'string') {
+              // Old format: simple string
+              return [
+                new Paragraph({
+                  children: [
+                    new TextRun({
+                      text: `${index + 1}. ${activity}`,
+                    }),
+                  ],
+                  spacing: {
+                    after: 100,
+                  },
+                  bullet: {
+                    level: 0,
+                  },
+                }),
+              ]
+            } else {
+              // New format: detailed activity object
+              const typeEmojis: Record<string, string> = {
+                warmup: '🔥',
+                main: '📚',
+                practice: '✍️',
+                review: '✅'
+              }
+              const emoji = typeEmojis[activity.type] || '📌'
+
+              return [
+                // Activity header
+                new Paragraph({
+                  children: [
+                    new TextRun({
+                      text: `${index + 1}. ${emoji} ${activity.title}`,
+                      bold: true,
+                      size: 24,
+                    }),
+                  ],
+                  spacing: {
+                    before: 200,
+                    after: 100,
+                  },
+                }),
+                // Type and duration
+                new Paragraph({
+                  children: [
+                    new TextRun({
+                      text: `Type: ${activity.type} | Duration: ${activity.duration}`,
+                      italics: true,
+                      size: 20,
+                    }),
+                  ],
+                  spacing: {
+                    after: 80,
+                  },
+                }),
+                // Goal
+                new Paragraph({
+                  children: [
+                    new TextRun({
+                      text: `🎯 Goal: `,
+                      bold: true,
+                    }),
+                    new TextRun({
+                      text: activity.goal,
+                    }),
+                  ],
+                  spacing: {
+                    after: 80,
+                  },
+                }),
+                // Instructions header
+                new Paragraph({
+                  children: [
+                    new TextRun({
+                      text: 'Step-by-step Instructions:',
+                      bold: true,
+                    }),
+                  ],
+                  spacing: {
+                    after: 60,
+                  },
+                }),
+                // Instructions list
+                ...activity.instructions.map(
+                  (instruction, i) =>
+                    new Paragraph({
+                      children: [
+                        new TextRun({
+                          text: `${i + 1}. ${instruction}`,
+                        }),
+                      ],
+                      spacing: {
+                        after: 60,
+                      },
+                      bullet: {
+                        level: 0,
+                      },
+                    })
+                ),
+              ]
+            }
+          }),
 
           // Materials Needed Section
           new Paragraph({
-            text: 'Необходимые материалы',
+            text: 'Materials Needed',
             heading: HeadingLevel.HEADING_2,
             spacing: {
               before: 300,
@@ -105,7 +200,7 @@ export async function exportLessonPlanToWord(plan: LessonPlan): Promise<void> {
 
           // Flashcards Section
           new Paragraph({
-            text: 'Карточки для запоминания',
+            text: 'Flashcards',
             heading: HeadingLevel.HEADING_2,
             spacing: {
               before: 300,
@@ -128,7 +223,7 @@ export async function exportLessonPlanToWord(plan: LessonPlan): Promise<void> {
                       new Paragraph({
                         children: [
                           new TextRun({
-                            text: 'Вопрос/Термин',
+                            text: 'Question/Term',
                             bold: true,
                           }),
                         ],
@@ -148,7 +243,7 @@ export async function exportLessonPlanToWord(plan: LessonPlan): Promise<void> {
                       new Paragraph({
                         children: [
                           new TextRun({
-                            text: 'Ответ/Определение',
+                            text: 'Answer/Definition',
                             bold: true,
                           }),
                         ],
@@ -212,7 +307,7 @@ export async function exportLessonPlanToWord(plan: LessonPlan): Promise<void> {
           new Paragraph({
             children: [
               new TextRun({
-                text: `Создано: ${new Date().toLocaleDateString('ru-RU')}`,
+                text: `Created: ${new Date().toLocaleDateString('en-US')}`,
                 italics: true,
                 size: 20,
               }),

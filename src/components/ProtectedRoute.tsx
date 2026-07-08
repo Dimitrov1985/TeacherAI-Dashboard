@@ -1,5 +1,6 @@
 import { Navigate } from 'react-router-dom'
-import { useAuth } from '../context/AuthContext'
+import { useAuth } from '../context/AuthContext' // ⏳ Временно вернули
+// import { useSupabaseAuth } from '../context/SupabaseAuthContext' // ✅ Вернём позже
 
 type ProtectedRouteProps = {
   children: React.ReactNode

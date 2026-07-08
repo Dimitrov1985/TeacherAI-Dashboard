@@ -12,11 +12,21 @@ export type Flashcard = {
   back: string;
 };
 
+export type ActivityType = "warmup" | "main" | "practice" | "review";
+
+export type DetailedActivity = {
+  type: ActivityType;
+  title: string;
+  duration: string;
+  goal: string;
+  instructions: string[];
+};
+
 export type GeneratedLessonPlan = {
   title: string;
   objectives: string[];
   flashcards: Flashcard[];
-  activities: string[];
+  activities: DetailedActivity[] | string[]; // Support both old and new format
   materialsNeeded: string[];
 };
 

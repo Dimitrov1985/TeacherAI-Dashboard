@@ -220,3 +220,41 @@ export function getAttendanceStats(studentId: string): {
 
   return { total, present, absent, late, excused, attendanceRate }
 }
+
+// ==================== CLEANUP ====================
+
+/**
+ * Удалить всех студентов без привязки к классу
+ */
+export function deleteStudentsWithoutClass(): number {
+  const students = loadStudents()
+  const withoutClass = students.filter((s) => !s.classId || s.classId === 'Без класса')
+  const studentIds = withoutClass.map(s => s.id)
+
+  console.log('🗑️ Удаление студентов без класса...')
+  console.log(`   Найдено: ${withoutClass.length} студентов`)
+
+  withoutClass.forEach(student => {
+    console.log(`   - ${student.firstName} ${student.lastName} (ID: ${student.studentId})`)
+  })
+
+  // Удалить студентов
+  const remainingStudents = students.filter((s) => s.classId && s.classId !== 'Без класса')
+  saveStudents(remainingStudents)
+
+  // Удалить их оценки
+  const grades = loadGrades().filter((g) => !studentIds.includes(g.studentId))
+  saveGrades(grades)
+
+  // Удалить их посещаемость
+  const attendance = loadAttendance().filter((a) => !studentIds.includes(a.studentId))
+  saveAttendance(attendance)
+
+  console.log(`✅ Удалено ${withoutClass.length} студентов`)
+  return withoutClass.length
+}
+
+// Экспорт в глобальный объект для доступа из консоли
+if (typeof window !== 'undefined') {
+  ;(window as any).deleteStudentsWithoutClass = deleteStudentsWithoutClass
+}

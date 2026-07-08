@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useAuth } from '../../context/AuthContext'
+import { useAuth } from '../../context/AuthContext' // ⏳ Временно вернули
+// import { useSupabaseAuth } from '../../context/SupabaseAuthContext' // ✅ Вернём позже
 import { IconBell, IconMessage } from './icons'
 
 export default function TopIcons() {

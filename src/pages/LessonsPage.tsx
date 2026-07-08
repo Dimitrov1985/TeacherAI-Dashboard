@@ -17,7 +17,19 @@ export default function LessonsPage() {
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
 
   useEffect(() => {
+    // Загрузить планы при монтировании
     setLessonPlans(loadLessonPlans())
+
+    // Подписаться на изменения
+    function handlePlansChange() {
+      setLessonPlans(loadLessonPlans())
+    }
+
+    window.addEventListener('lesson-plans-changed', handlePlansChange)
+
+    return () => {
+      window.removeEventListener('lesson-plans-changed', handlePlansChange)
+    }
   }, [])
 
   function handleGenerateClick() {

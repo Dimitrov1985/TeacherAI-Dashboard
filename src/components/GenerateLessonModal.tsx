@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import type { GeneratedLessonPlan } from '../data/lessonDetails'
+// import { authenticatedFetch, handleAPIResponse, APIError } from '../lib/api' // ⏳ Требует Supabase JWT
 
 type GenerateLessonModalProps = {
   onClose: () => void
@@ -9,7 +10,6 @@ type GenerateLessonModalProps = {
 export default function GenerateLessonModal({ onClose, onGenerate }: GenerateLessonModalProps) {
   const [preview, setPreview] = useState<string | null>(null)
   const [fileName, setFileName] = useState<string | null>(null)
-  const [grade, setGrade] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
@@ -38,40 +38,29 @@ export default function GenerateLessonModal({ onClose, onGenerate }: GenerateLes
       setError('Загрузите фото учебника')
       return
     }
-    if (!grade.trim()) {
-      setError('Укажите класс')
-      return
-    }
 
     setLoading(true)
     setError(null)
 
     try {
+      // ⏳ Временно используем старый незащищённый endpoint
       const response = await fetch('/api/generate-plan', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ imageDataUrl: preview }),
       })
 
-      // Сначала проверяем статус
       if (!response.ok) {
-        throw new Error(`HTTP error: ${response.status}`)
+        throw new Error('Failed to generate lesson plan')
       }
 
-      // Читаем как текст
-      const text = await response.text()
-      if (!text) {
-        throw new Error('Empty response from server')
-      }
+      const data = await response.json()
 
-      // Парсим JSON
-      const data = JSON.parse(text)
       if (!data.plan) {
         throw new Error('Invalid response format')
       }
 
-      const plan = data.plan as GeneratedLessonPlan
-      onGenerate(plan)
+      onGenerate(data.plan)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to generate lesson plan')
     } finally {
@@ -162,18 +151,6 @@ export default function GenerateLessonModal({ onClose, onGenerate }: GenerateLes
               />
             </label>
           </div>
-        </div>
-
-        <div className="flex flex-col gap-1">
-          <label className="text-sm font-medium text-[#1D3557]">Класс</label>
-          <input
-            type="text"
-            value={grade}
-            onChange={(e) => setGrade(e.target.value)}
-            disabled={loading}
-            placeholder="Например: 6А или Grade 6"
-            className="rounded-lg border border-[#DCE8F5] px-3 py-2.5 text-sm text-[#1D3557] outline-none transition-colors focus:border-[#457B9D] disabled:opacity-50"
-          />
         </div>
 
         {error && <p className="text-sm text-[#CE1821]">{error}</p>}

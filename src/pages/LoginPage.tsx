@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { useAuth } from '../context/AuthContext'
+import { useAuth } from '../context/AuthContext' // ⏳ Временно вернули
+// import { useSupabaseAuth } from '../context/SupabaseAuthContext' // ✅ Вернём позже
+import { celebrateSuccess } from '../lib/confetti'
 
 export default function LoginPage() {
   const navigate = useNavigate()
@@ -37,6 +39,11 @@ export default function LoginPage() {
 
     try {
       await login(email, password)
+
+      // 🎉 Запускаем анимацию конфетти
+      await celebrateSuccess()
+
+      // Редирект после анимации
       navigate('/')
     } catch (error) {
       setErrors({ password: 'Invalid email or password' })

@@ -1,14 +1,15 @@
 import type { GeneratedLessonPlan } from '../data/lessonDetails'
 import { getCurrentUserId } from './auth'
+import { emitLessonPlansChange } from './storageEvents'
 
 const getStorageKey = (userId: string) => `teacher-dashboard:${userId}:lesson-plans`
 
 export type SavedLessonPlan = {
   id: string
   plan: GeneratedLessonPlan
-  grade: string
+  grade: string // класс, например "10A" или "Grade 6"
   createdAt: string
-  linkedLessonId?: string // ID урока из Weekly Schedule
+  linkedLessonId?: string // ID урока из Weekly Schedule для связи
 }
 
 export function loadLessonPlans(): SavedLessonPlan[] {
@@ -40,6 +41,10 @@ export function saveLessonPlan(plan: GeneratedLessonPlan, grade: string): SavedL
   const plans = loadLessonPlans()
   plans.unshift(lessonPlan)
   localStorage.setItem(getStorageKey(userId), JSON.stringify(plans))
+
+  // Уведомить об изменениях
+  emitLessonPlansChange()
+
   return lessonPlan
 }
 
@@ -49,6 +54,9 @@ export function deleteLessonPlan(id: string): void {
 
   const plans = loadLessonPlans().filter(p => p.id !== id)
   localStorage.setItem(getStorageKey(userId), JSON.stringify(plans))
+
+  // Уведомить об изменениях
+  emitLessonPlansChange()
 }
 
 export function linkLessonPlan(planId: string, lessonId: string): void {

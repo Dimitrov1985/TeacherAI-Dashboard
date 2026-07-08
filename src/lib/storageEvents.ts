@@ -6,3 +6,11 @@ export function emitMaterialsChange() {
 export function emitLessonsChange() {
   window.dispatchEvent(new Event('lessons-changed'))
 }
+
+export function emitLessonPlansChange() {
+  window.dispatchEvent(new Event('lesson-plans-changed'))
+}
+
+export function emitHomeworkChange() {
+  window.dispatchEvent(new Event('homework-changed'))
+}

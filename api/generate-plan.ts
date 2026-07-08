@@ -1,7 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node'
-import { GoogleGenerativeAI } from '@google/generative-ai'
+import Anthropic from '@anthropic-ai/sdk'
 
-const MODEL = 'gemini-2.0-flash-exp' // Free tier model with vision support
+const MODEL = 'claude-haiku-4-5-20251001' // Claude Haiku 4.5 - faster and cheaper with vision support
 
 type GeneratePlanRequestBody = {
   imageDataUrl?: string
@@ -19,9 +19,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return
   }
 
-  const apiKey = process.env.GOOGLE_API_KEY
+  const apiKey = process.env.ANTHROPIC_API_KEY
   if (!apiKey) {
-    res.status(500).json({ error: 'GOOGLE_API_KEY is not configured on the server' })
+    res.status(500).json({ error: 'ANTHROPIC_API_KEY is not configured on the server' })
     return
   }
 
@@ -38,40 +38,85 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   try {
-    const genAI = new GoogleGenerativeAI(apiKey)
-    const model = genAI.getGenerativeModel({ model: MODEL })
+    const anthropic = new Anthropic({
+      apiKey: apiKey,
+    })
 
-    const result = await model.generateContent([
-      {
-        inlineData: {
-          data: parsed.base64,
-          mimeType: parsed.mimeType,
-        },
-      },
-      {
-        text: `You are an assistant for a school teacher. Read the textbook page in the photo and produce a complete lesson plan based on it.
+    const message = await anthropic.messages.create({
+      model: MODEL,
+      max_tokens: 8192,
+      messages: [
+        {
+          role: 'user',
+          content: [
+            {
+              type: 'image',
+              source: {
+                type: 'base64',
+                media_type: parsed.mimeType as 'image/jpeg' | 'image/png' | 'image/gif' | 'image/webp',
+                data: parsed.base64,
+              },
+            },
+            {
+              type: 'text',
+              text: `You are an expert assistant for a school teacher. Read the textbook page in the photo and produce a DETAILED lesson plan based on it.
+
+IMPORTANT: Generate EVERYTHING in English language only. All text, titles, descriptions, and instructions must be in English.
 
 Respond with ONLY valid JSON, no markdown fences, matching exactly this shape:
 {
-  "title": "short lesson title",
-  "objectives": ["3 to 5 learning objectives"],
-  "flashcards": [{ "front": "term or question", "back": "definition or answer" }],
-  "activities": ["2 to 3 classroom activities"],
-  "materialsNeeded": ["physical or digital materials needed"]
+  "title": "lesson title in English",
+  "objectives": ["learning objective in English", "another objective in English"],
+  "flashcards": [
+    { "front": "term or question in English", "back": "definition or answer in English" }
+  ],
+  "activities": [
+    {
+      "type": "warmup|main|practice|review",
+      "title": "activity name in English",
+      "duration": "5-10 min",
+      "goal": "what students will achieve in English",
+      "instructions": [
+        "step 1 in English",
+        "step 2 in English",
+        "step 3 in English"
+      ]
+    }
+  ],
+  "materialsNeeded": ["material description in English", "another material in English"]
 }
 
-Include at least 5 flashcards covering the key terms/concepts from the page.`,
-      },
-    ])
+REQUIREMENTS:
+- Write EVERYTHING in English language
+- Include 5-7 flashcards covering key terms/concepts from the textbook page
+- Create 4-6 diverse activities:
+  * 1 warmup (5-10 min) - engagement/review of prior knowledge
+  * 2-3 main activities (10-15 min each) - teaching new content
+  * 1-2 practice activities (10-15 min) - hands-on application
+  * 1 review/closure (5-10 min) - summarize and assess learning
+- Each activity must have: type, title, duration, goal, and 3-5 step-by-step instructions
+- Make activities interactive, practical, and age-appropriate
+- Total lesson time should be 45-60 minutes
+- All content (objectives, activities, materials, flashcards) must be written in English`,
+            },
+          ],
+        },
+      ],
+    })
 
-    const response = await result.response
-    const text = response.text()
+    const content = message.content[0]
+    if (content.type !== 'text') {
+      res.status(502).json({ error: 'Unexpected response type from Claude' })
+      return
+    }
 
+    const text = content.text
     if (!text) {
       res.status(502).json({ error: 'No response from the model' })
       return
     }
 
+    // Remove markdown code fences if present
     const jsonText = text.trim().replace(/^```json\s*|\s*```$/g, '')
     const plan = JSON.parse(jsonText)
 

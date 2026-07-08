@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { useAuth } from '../context/AuthContext'
+import { useAuth } from '../context/AuthContext' // ⏳ Временно вернули
+// import { useSupabaseAuth } from '../context/SupabaseAuthContext' // ✅ Вернём позже
+import { celebrateSuccess } from '../lib/confetti'
 
 const subjects = [
   'Applied Science',
@@ -100,11 +102,12 @@ export default function SignUpPage() {
 
     try {
       await signup({ firstName, lastName, email, password })
-      setShowToast(true)
-      setTimeout(() => {
-        setShowToast(false)
-        navigate('/')
-      }, 2000)
+
+      // 🎉 Запускаем анимацию конфетти
+      await celebrateSuccess()
+
+      // Редирект после анимации (toast уже не нужен, есть конфетти)
+      navigate('/')
     } catch (error) {
       setErrors({ email: 'Registration failed. Please try again.' })
     } finally {

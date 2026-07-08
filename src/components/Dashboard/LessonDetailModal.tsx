@@ -4,6 +4,7 @@ import { LESSON_DETAILS, type Homework, type Material } from '../../data/lessonD
 import { loadMaterials, saveMaterials } from '../../lib/materialsStore'
 import { exportLessonPlanToWord } from '../../lib/exportToWord'
 import { emitMaterialsChange } from '../../lib/storageEvents'
+import { saveLessonPlan, linkLessonPlan } from '../../lib/lessonsStore'
 import { IconClock } from './icons'
 import GeneratePlanModal from './GeneratePlanModal'
 import LessonPlanViewer from './LessonPlanViewer'
@@ -52,10 +53,23 @@ export default function LessonDetailModal({ lesson, onClose, onEdit }: LessonDet
   }
 
   function addMaterial(material: Material) {
+    // 1. Сохранить в materials конкретного урока (для отображения в модалке)
     const updated = [...materials, material]
     setMaterials(updated)
     saveMaterials(lesson.id, updated)
     emitMaterialsChange()
+
+    // 2. Если есть plan - сохранить в общее хранилище планов ("My Lessons")
+    if (material.plan) {
+      try {
+        const savedPlan = saveLessonPlan(material.plan, lesson.class || 'N/A')
+        // Привязать план к уроку из расписания
+        linkLessonPlan(savedPlan.id, lesson.id)
+        console.log('✅ Plan saved to My Lessons:', savedPlan.id, '→ linked to lesson:', lesson.id)
+      } catch (error) {
+        console.error('Failed to save plan to My Lessons:', error)
+      }
+    }
   }
 
   function removeMaterial(index: number) {

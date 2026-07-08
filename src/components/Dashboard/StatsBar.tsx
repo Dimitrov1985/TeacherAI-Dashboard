@@ -1,10 +1,8 @@
 import { useEffect, useState } from 'react'
 import { IconCoursesStat, IconClassesStat, IconStudentsStat } from './icons'
-
-const STORAGE_PREFIX = 'teacher-dashboard:materials:'
-const LESSONS_STORAGE_KEY = 'teacher-dashboard:lessons'
-const STUDENTS_STORAGE_KEY = 'teacher-dashboard:students'
-const CLASSES_STORAGE_KEY = 'teacher-dashboard:classes'
+import { getCurrentUserId } from '../../lib/auth'
+import { loadStudents } from '../../lib/studentsStore'
+import { loadClasses } from '../../lib/referencesStore'
 
 export default function StatsBar() {
   const [lessonPlansCount, setLessonPlansCount] = useState(0)
@@ -45,11 +43,19 @@ export default function StatsBar() {
   }, [])
 
   function updateLessonPlansCount() {
+    const userId = getCurrentUserId()
+    if (!userId) {
+      setLessonPlansCount(0)
+      return
+    }
+
     let count = 0
+    const materialPrefix = `teacher-dashboard:${userId}:materials:`
+
     // Loop through all localStorage keys
     for (let i = 0; i < localStorage.length; i++) {
       const key = localStorage.key(i)
-      if (key?.startsWith(STORAGE_PREFIX)) {
+      if (key?.startsWith(materialPrefix)) {
         try {
           const materials = JSON.parse(localStorage.getItem(key) || '[]')
           // Count materials that have a plan
@@ -66,34 +72,20 @@ export default function StatsBar() {
 
   function updateClassesCount() {
     try {
-      const raw = localStorage.getItem(CLASSES_STORAGE_KEY)
-      if (raw) {
-        const classes = JSON.parse(raw)
-        if (Array.isArray(classes)) {
-          setClassesCount(classes.length)
-          return
-        }
-      }
+      const classes = loadClasses()
+      setClassesCount(classes.length)
     } catch {
-      // ignore malformed data
+      setClassesCount(0)
     }
-    setClassesCount(0)
   }
 
   function updateStudentsCount() {
     try {
-      const raw = localStorage.getItem(STUDENTS_STORAGE_KEY)
-      if (raw) {
-        const students = JSON.parse(raw)
-        if (Array.isArray(students)) {
-          setStudentsCount(students.length)
-          return
-        }
-      }
+      const students = loadStudents()
+      setStudentsCount(students.length)
     } catch {
-      // ignore malformed data
+      setStudentsCount(0)
     }
-    setStudentsCount(0)
   }
 
   const stats = [

@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import type { GeneratedLessonPlan, Material } from '../../data/lessonDetails'
+// import { authenticatedFetch, handleAPIResponse, APIError } from '../../lib/api' // ⏳ Требует Supabase JWT
 
 type GeneratePlanModalProps = {
   onClose: () => void
@@ -36,30 +37,24 @@ export default function GeneratePlanModal({ onClose, onGenerate }: GeneratePlanM
     setLoading(true)
     setError(null)
     try {
+      // ⏳ Временно используем старый незащищённый endpoint
       const response = await fetch('/api/generate-plan', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ imageDataUrl: preview }),
       })
 
-      // Сначала проверяем статус
       if (!response.ok) {
-        throw new Error(`HTTP error: ${response.status}`)
+        throw new Error('Failed to generate lesson plan')
       }
 
-      // Читаем как текст
-      const text = await response.text()
-      if (!text) {
-        throw new Error('Empty response from server')
-      }
+      const data = await response.json()
 
-      // Парсим JSON
-      const data = JSON.parse(text)
       if (!data.plan) {
         throw new Error('Invalid response format')
       }
 
-      const plan = data.plan as GeneratedLessonPlan
+      const plan = data.plan
       onGenerate({
         icon: '📘',
         title: plan.title,

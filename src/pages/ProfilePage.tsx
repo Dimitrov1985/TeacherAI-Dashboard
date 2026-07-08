@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { useAuth } from '../context/AuthContext'
+import { useAuth } from '../context/AuthContext' // ⏳ Временно вернули
+// import { useSupabaseAuth } from '../context/SupabaseAuthContext' // ✅ Вернём позже
 
 export default function ProfilePage() {
   const { user, updateProfile } = useAuth()
@@ -35,8 +36,8 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-white p-8">
-      <div className="mx-auto w-full max-w-4xl">
+    <div className="flex flex-1 flex-col overflow-y-auto bg-white p-8">
+      <div className="w-full max-w-4xl">
         <h1 className="mb-6 text-3xl font-bold text-[#1D3557]">Мой профиль</h1>
 
         <div className="grid gap-6 md:grid-cols-3">

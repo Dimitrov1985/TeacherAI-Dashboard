@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import type { Student } from '../../data/students'
 import { loadClasses, loadSubjects, loadPeriods, addClass, updateClassSubjects } from '../../lib/referencesStore'
 import type { Subject, Period } from '../../data/references'
+// import { authenticatedFetch, handleAPIResponse, APIError } from '../../lib/api' // ⏳ Требует Supabase JWT
 
 type ImportedStudent = {
   studentId?: string
@@ -74,6 +75,7 @@ export default function BulkImportModal({ onImport, onClose }: BulkImportModalPr
       reader.onload = async (e) => {
         const base64 = e.target?.result as string
 
+        // ⏳ Временно используем старый незащищённый endpoint
         const response = await fetch('/api/extract-students', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -84,11 +86,16 @@ export default function BulkImportModal({ onImport, onClose }: BulkImportModalPr
         })
 
         if (!response.ok) {
-          throw new Error('Ошибка обработки изображения')
+          throw new Error('Failed to extract students')
         }
 
         const data = await response.json()
-        setParsedStudents(data.students || [])
+
+        if (!data.students || !Array.isArray(data.students)) {
+          throw new Error('Invalid response format')
+        }
+
+        setParsedStudents(data.students)
         setIsProcessing(false)
       }
 
