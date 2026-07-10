@@ -42,7 +42,10 @@ export default function HomeworkPage() {
   const subjects = Array.from(new Set(homework.map((hw) => hw.subject).filter(Boolean)))
 
   return (
-    <div className="flex flex-1 flex-col gap-6 overflow-y-auto bg-white p-8">
+    <div
+      className="flex flex-1 flex-col gap-6 overflow-y-auto p-8"
+      style={{ backgroundColor: 'var(--bg-page)' }}
+    >
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>

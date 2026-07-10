@@ -83,20 +83,28 @@ export default function AddHomeworkModal({ onClose }: AddHomeworkModalProps) {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 p-4"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}
       onClick={onClose}
     >
       <form
         onClick={(e) => e.stopPropagation()}
         onSubmit={handleSubmit}
-        className="flex w-full max-w-lg flex-col gap-5 rounded-2xl bg-white p-6 shadow-xl"
+        className="flex w-full max-w-lg flex-col gap-5 rounded-2xl p-6 shadow-xl max-h-[90vh] overflow-y-auto"
+        style={{
+          backgroundColor: 'var(--bg-surface)',
+          border: '1px solid var(--border)',
+        }}
       >
         <div className="flex items-center justify-between">
-          <h3 className="text-xl font-semibold text-[#1D3557]">Add Homework</h3>
+          <h3 className="text-xl font-semibold" style={{ color: 'var(--text-primary)' }}>Add Homework</h3>
           <button
             type="button"
             onClick={onClose}
-            className="text-2xl text-[#B1B1B1] transition-colors hover:text-[#1D3557]"
+            className="text-2xl transition-colors"
+            style={{ color: 'var(--text-muted)' }}
+            onMouseEnter={(e) => e.currentTarget.style.color = 'var(--text-primary)'}
+            onMouseLeave={(e) => e.currentTarget.style.color = 'var(--text-muted)'}
           >
             ×
           </button>
@@ -106,7 +114,14 @@ export default function AddHomeworkModal({ onClose }: AddHomeworkModalProps) {
         <button
           type="button"
           onClick={() => setShowAIModal(true)}
-          className="flex items-center justify-center gap-2 rounded-lg border-2 border-dashed border-[#7c3aed] bg-[#7c3aed]/5 px-4 py-3 text-sm font-medium text-[#7c3aed] transition-colors hover:bg-[#7c3aed]/10"
+          className="flex items-center justify-center gap-2 rounded-lg border-2 border-dashed px-4 py-3 text-sm font-medium transition-colors"
+          style={{
+            borderColor: '#7c3aed',
+            backgroundColor: '#7c3aed10',
+            color: '#7c3aed',
+          }}
+          onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#7c3aed20'}
+          onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#7c3aed10'}
         >
           <span>✨</span>
           <span>Generate with AI</span>
@@ -114,37 +129,58 @@ export default function AddHomeworkModal({ onClose }: AddHomeworkModalProps) {
 
         {/* Title */}
         <div className="flex flex-col gap-1">
-          <label className="text-sm font-medium text-[#1D3557]">Title *</label>
+          <label className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>Title *</label>
           <input
             type="text"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             placeholder="e.g., Read Chapter 5 & summarize"
-            className="rounded-lg border border-[#DCE8F5] px-3 py-2 text-sm outline-none focus:border-[#457B9D]"
+            className="rounded-lg px-3 py-2 text-sm outline-none"
+            style={{
+              backgroundColor: 'var(--bg-surface)',
+              border: '1px solid var(--border)',
+              color: 'var(--text-primary)',
+            }}
+            onFocus={(e) => e.currentTarget.style.borderColor = 'var(--accent)'}
+            onBlur={(e) => e.currentTarget.style.borderColor = 'var(--border)'}
             required
           />
         </div>
 
         {/* Description */}
         <div className="flex flex-col gap-1">
-          <label className="text-sm font-medium text-[#1D3557]">Description</label>
+          <label className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>Description</label>
           <textarea
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             placeholder="Detailed instructions for students..."
             rows={4}
-            className="resize-none rounded-lg border border-[#DCE8F5] px-3 py-2 text-sm outline-none focus:border-[#457B9D]"
+            className="resize-none rounded-lg px-3 py-2 text-sm outline-none"
+            style={{
+              backgroundColor: 'var(--bg-surface)',
+              border: '1px solid var(--border)',
+              color: 'var(--text-primary)',
+            }}
+            onFocus={(e) => e.currentTarget.style.borderColor = 'var(--accent)'}
+            onBlur={(e) => e.currentTarget.style.borderColor = 'var(--border)'}
           />
         </div>
 
         {/* Subject & Class */}
         <div className="grid grid-cols-2 gap-3">
           <div className="flex flex-col gap-1">
-            <label className="text-sm font-medium text-[#1D3557]">Subject</label>
+            <label className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>Subject</label>
             <select
               value={subject}
               onChange={(e) => setSubject(e.target.value)}
-              className="rounded-lg border border-[#DCE8F5] px-3 py-2 text-sm outline-none focus:border-[#457B9D]"
+              className="rounded-lg px-3 py-2 text-sm outline-none"
+              style={{
+                backgroundColor: 'var(--bg-surface)',
+                border: '1px solid var(--border)',
+                color: 'var(--text-primary)',
+              }}
+              onFocus={(e) => e.currentTarget.style.borderColor = 'var(--accent)'}
+              onBlur={(e) => e.currentTarget.style.borderColor = 'var(--border)'}
             >
               <option value="">Select subject</option>
               {subjects.map((s) => (
@@ -154,11 +190,18 @@ export default function AddHomeworkModal({ onClose }: AddHomeworkModalProps) {
           </div>
 
           <div className="flex flex-col gap-1">
-            <label className="text-sm font-medium text-[#1D3557]">Class *</label>
+            <label className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>Class *</label>
             <select
               value={classId}
               onChange={(e) => setClassId(e.target.value)}
-              className="rounded-lg border border-[#DCE8F5] px-3 py-2 text-sm outline-none focus:border-[#457B9D]"
+              className="rounded-lg px-3 py-2 text-sm outline-none"
+              style={{
+                backgroundColor: 'var(--bg-surface)',
+                border: '1px solid var(--border)',
+                color: 'var(--text-primary)',
+              }}
+              onFocus={(e) => e.currentTarget.style.borderColor = 'var(--accent)'}
+              onBlur={(e) => e.currentTarget.style.borderColor = 'var(--border)'}
               required
             >
               <option value="">Select class</option>
@@ -171,12 +214,19 @@ export default function AddHomeworkModal({ onClose }: AddHomeworkModalProps) {
 
         {/* Due Date */}
         <div className="flex flex-col gap-1">
-          <label className="text-sm font-medium text-[#1D3557]">Due Date *</label>
+          <label className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>Due Date *</label>
           <input
             type="date"
             value={due}
             onChange={(e) => setDue(e.target.value)}
-            className="rounded-lg border border-[#DCE8F5] px-3 py-2 text-sm outline-none focus:border-[#457B9D]"
+            className="rounded-lg px-3 py-2 text-sm outline-none"
+            style={{
+              backgroundColor: 'var(--bg-surface)',
+              border: '1px solid var(--border)',
+              color: 'var(--text-primary)',
+            }}
+            onFocus={(e) => e.currentTarget.style.borderColor = 'var(--accent)'}
+            onBlur={(e) => e.currentTarget.style.borderColor = 'var(--border)'}
             required
           />
         </div>
@@ -186,13 +236,22 @@ export default function AddHomeworkModal({ onClose }: AddHomeworkModalProps) {
           <button
             type="button"
             onClick={onClose}
-            className="flex-1 rounded-lg border border-[#DCE8F5] px-4 py-2 text-sm font-medium text-[#457B9D] transition-colors hover:bg-[#DCE8F5]"
+            className="flex-1 rounded-lg px-4 py-2 text-sm font-medium transition-colors"
+            style={{
+              border: '1px solid var(--border)',
+              color: 'var(--text-secondary)',
+            }}
+            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--bg-surface-2)'}
+            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
           >
             Cancel
           </button>
           <button
             type="submit"
-            className="flex-1 rounded-lg bg-[#457B9D] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#1D3557]"
+            className="flex-1 rounded-lg px-4 py-2 text-sm font-medium text-white transition-colors"
+            style={{ backgroundColor: 'var(--accent)' }}
+            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--accent-hover)'}
+            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--accent)'}
           >
             Create Homework
           </button>

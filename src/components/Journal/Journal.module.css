@@ -8,53 +8,65 @@
 
 .btn {
   padding: 5px 13px;
-  background: #457B9D;
+  background: var(--accent);
   color: #fff;
   border: none;
   border-radius: 4px;
   font-size: 12px;
   font-weight: 500;
   cursor: pointer;
+  transition: background-color 0.2s ease;
 }
 
 .btn:hover {
-  opacity: 0.88;
+  background: var(--accent-hover);
+  opacity: 1;
 }
 
 .btnGhost {
   background: transparent;
-  color: #5a5a56;
-  border: 0.5px solid #d0cfc8;
+  color: var(--text-secondary);
+  border: 0.5px solid var(--border);
+  transition: background-color 0.2s ease;
 }
 
 .btnGhost:hover {
-  background: #f5f5f0;
+  background: var(--bg-surface-2);
   opacity: 1;
 }
 
 .dateInp {
   padding: 5px 9px;
-  border: 0.5px solid #b0afa8;
+  border: 0.5px solid var(--border);
   border-radius: 4px;
-  background: #fff;
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  transition: border-color 0.2s ease;
+}
+
+.dateInp:focus {
+  border-color: var(--accent);
+  outline: none;
 }
 
 /* Table */
 .tblWrap {
   overflow-x: auto;
-  border: 1px solid #b0afa8;
+  border: 1px solid var(--border);
   border-radius: 8px;
+  background: var(--bg-surface);
 }
 
 .table {
   border-collapse: collapse;
   width: 100%;
   min-width: 700px;
+  background: var(--bg-surface);
 }
 
 .table th,
 .table td {
-  border: 0.5px solid #d0cfc8;
+  border: 0.5px solid var(--border);
   padding: 0;
   text-align: center;
   white-space: nowrap;
@@ -63,8 +75,8 @@
 .thName {
   text-align: left;
   padding: 6px 11px;
-  background: #e9efff;
-  color: #457B9D;
+  background: var(--bg-surface-2);
+  color: var(--accent);
   font-weight: 500;
   font-size: 12px;
   min-width: 170px;
@@ -74,17 +86,17 @@
 }
 
 .thMonth {
-  background: #e9efff;
-  color: #457B9D;
+  background: var(--bg-surface-2);
+  color: var(--accent);
   font-weight: 500;
   font-size: 11px;
   padding: 4px 6px;
 }
 
 .thDay {
-  background: #f0f4f8;
+  background: var(--bg-surface);
   font-size: 11px;
-  color: #5a5a56;
+  color: var(--text-secondary);
   font-weight: 400;
   padding: 3px 2px;
   min-width: 26px;
@@ -106,8 +118,8 @@
 }
 
 .thSum {
-  background: #e9efff;
-  color: #457B9D;
+  background: var(--bg-surface-2);
+  color: var(--accent);
   font-size: 11px;
   font-weight: 500;
   padding: 4px 5px;
@@ -115,7 +127,7 @@
 }
 
 .sepCol {
-  background: #ebebea !important;
+  background: var(--border) !important;
   width: 5px;
   padding: 0;
   border: none;
@@ -125,7 +137,8 @@
   text-align: left;
   padding: 4px 11px;
   font-size: 12px;
-  background: #fff;
+  background: var(--bg-surface);
+  color: var(--text-primary);
   min-width: 170px;
   position: sticky;
   left: 0;
@@ -133,15 +146,15 @@
 }
 
 .rowAlt td {
-  background: #f8f8f6;
+  background: var(--bg-surface-hover);
 }
 
 .rowAlt .tdName {
-  background: #f8f8f6;
+  background: var(--bg-surface-hover);
 }
 
 .table tbody tr:hover td {
-  background: #e6f1fb !important;
+  background: var(--bg-hover) !important;
 }
 
 .gCell {
@@ -150,10 +163,11 @@
   height: 27px;
   min-width: 26px;
   position: relative;
+  background: var(--bg-surface);
 }
 
 .gCell:hover {
-  background: #eaf3de !important;
+  background: var(--bg-hover) !important;
 }
 
 .gVal {
@@ -164,31 +178,32 @@
 }
 
 .g5 {
-  color: #1a7a2a;
+  color: var(--grade-5);
 }
 
 .g4 {
-  color: #185fa5;
+  color: var(--grade-4);
 }
 
 .g3 {
-  color: #854f0b;
+  color: var(--grade-3);
 }
 
 .g2 {
-  color: #a32d2d;
+  color: var(--grade-2);
 }
 
 .sp {
-  color: #9a9a94;
+  color: var(--text-muted);
   font-size: 10px;
 }
 
 .tdAvg {
   font-size: 12px;
   font-weight: 500;
-  color: #5a5a56;
+  color: var(--text-secondary);
   padding: 0 5px;
+  background: var(--bg-surface);
 }
 
 .tdFin {
@@ -196,10 +211,12 @@
   font-weight: 600;
   padding: 0 5px;
   cursor: pointer;
+  background: var(--bg-surface);
+  color: var(--text-primary);
 }
 
 .tdFin:hover {
-  background: #eaf3de !important;
+  background: var(--bg-hover) !important;
 }
 
 .gInput {
@@ -210,10 +227,10 @@
   text-align: center;
   font-size: 12px;
   font-weight: 500;
-  border: 1.5px solid #457B9D;
+  border: 1.5px solid var(--accent);
   border-radius: 3px;
-  background: #fff;
-  color: #1a1a18;
+  background: var(--bg-surface);
+  color: var(--text-primary);
   padding: 0;
   outline: none;
 }
@@ -221,25 +238,27 @@
 .legend {
   margin-top: 8px;
   font-size: 11px;
-  color: #9a9a94;
+  color: var(--text-muted);
 }
 
 /* Attendance */
 .attTblWrap {
   overflow-x: auto;
-  border: 1px solid #b0afa8;
+  border: 1px solid var(--border);
   border-radius: 8px;
+  background: var(--bg-surface);
 }
 
 .attTbl {
   border-collapse: collapse;
   width: 100%;
   min-width: 600px;
+  background: var(--bg-surface);
 }
 
 .attTbl th,
 .attTbl td {
-  border: 0.5px solid #d0cfc8;
+  border: 0.5px solid var(--border);
   text-align: center;
   white-space: nowrap;
 }
@@ -247,24 +266,24 @@
 .attThName {
   text-align: left;
   padding: 5px 11px;
-  background: #e9efff;
-  color: #457B9D;
+  background: var(--bg-surface-2);
+  color: var(--accent);
   font-size: 12px;
   font-weight: 500;
   min-width: 170px;
 }
 
 .attThDay {
-  background: #f0f4f8;
+  background: var(--bg-surface);
   font-size: 10px;
-  color: #5a5a56;
+  color: var(--text-secondary);
   padding: 3px 2px;
   min-width: 27px;
 }
 
 .attThStat {
-  background: #e9efff;
-  color: #457B9D;
+  background: var(--bg-surface-2);
+  color: var(--accent);
   font-size: 11px;
   padding: 4px 8px;
 }
@@ -273,6 +292,8 @@
   text-align: left;
   padding: 4px 11px;
   font-size: 12px;
+  background: var(--bg-surface);
+  color: var(--text-primary);
 }
 
 .attCell {
@@ -281,33 +302,36 @@
   font-weight: 500;
   height: 27px;
   position: relative;
+  background: var(--bg-surface);
 }
 
 .attCell:hover {
-  background: #e6f1fb !important;
+  background: var(--bg-hover) !important;
 }
 
 .sPresent {
-  color: #1a7a2a;
+  color: var(--grade-5);
 }
 
 .sAbsent {
-  color: #a32d2d;
-  background: #fcebeb;
+  color: var(--grade-2);
+  background: var(--bg-error);
 }
 
 .sLate {
-  color: #854f0b;
+  color: var(--grade-3);
 }
 
 .sExcused {
-  color: #9a9a94;
+  color: var(--text-muted);
 }
 
 .attStat {
   font-weight: 600;
   font-size: 12px;
   padding: 0 8px;
+  background: var(--bg-surface);
+  color: var(--text-primary);
 }
 
 .attDrop {
@@ -315,11 +339,11 @@
   top: 100%;
   left: 0;
   z-index: 100;
-  background: #fff;
-  border: 0.5px solid #b0afa8;
+  background: var(--bg-surface);
+  border: 0.5px solid var(--border);
   border-radius: 4px;
   min-width: 155px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 .attOpt {
@@ -327,11 +351,11 @@
   font-size: 11px;
   cursor: pointer;
   text-align: left;
-  color: #1a1a18;
+  color: var(--text-primary);
 }
 
 .attOpt:hover {
-  background: #e6f1fb;
+  background: var(--bg-hover);
 }
 
 .attLegend {
@@ -340,11 +364,11 @@
   flex-wrap: wrap;
   margin-top: 8px;
   font-size: 11px;
-  color: #9a9a94;
+  color: var(--text-muted);
 }
 
 .attLegend b {
-  color: #5a5a56;
+  color: var(--text-secondary);
 }
 
 /* Final Grades */
@@ -366,9 +390,9 @@
   align-items: center;
   gap: 2px;
   padding: 9px 18px;
-  border: 1.5px solid #d0cfc8;
+  border: 1.5px solid var(--border);
   border-radius: 8px;
-  background: #fff;
+  background: var(--bg-surface);
   min-width: 68px;
 }
 
@@ -376,41 +400,45 @@
   font-size: 21px;
   font-weight: 500;
   line-height: 1;
+  color: var(--text-primary);
 }
 
 .statN {
   font-size: 17px;
   font-weight: 500;
+  color: var(--text-primary);
 }
 
 .statP {
   font-size: 10px;
-  color: #9a9a94;
+  color: var(--text-muted);
 }
 
 .finTblWrap {
   overflow-x: auto;
-  border: 0.5px solid #b0afa8;
+  border: 0.5px solid var(--border);
   border-radius: 8px;
   max-width: 440px;
+  background: var(--bg-surface);
 }
 
 .finTbl {
   border-collapse: collapse;
   width: 100%;
+  background: var(--bg-surface);
 }
 
 .finTbl th,
 .finTbl td {
-  border: 0.5px solid #d0cfc8;
+  border: 0.5px solid var(--border);
   padding: 0;
   text-align: center;
 }
 
 .finThN {
   padding: 5px;
-  background: #e9efff;
-  color: #457B9D;
+  background: var(--bg-surface-2);
+  color: var(--accent);
   font-size: 11px;
   width: 34px;
 }
@@ -418,37 +446,41 @@
 .finThName {
   text-align: left;
   padding: 5px 11px;
-  background: #e9efff;
-  color: #457B9D;
+  background: var(--bg-surface-2);
+  color: var(--accent);
   font-size: 12px;
   font-weight: 500;
 }
 
 .finThV {
   padding: 5px 8px;
-  background: #e9efff;
-  color: #457B9D;
+  background: var(--bg-surface-2);
+  color: var(--accent);
   font-size: 11px;
   min-width: 62px;
 }
 
 .finNum {
-  color: #9a9a94;
+  color: var(--text-muted);
   font-size: 11px;
   padding: 4px;
+  background: var(--bg-surface);
 }
 
 .finName {
   text-align: left;
   padding: 4px 11px;
   font-size: 12px;
+  background: var(--bg-surface);
+  color: var(--text-primary);
 }
 
 .finAvg {
   font-size: 11px;
-  color: #5a5a56;
+  color: var(--text-secondary);
   font-weight: 500;
   padding: 0 6px;
+  background: var(--bg-surface);
 }
 
 .finFin {
@@ -456,8 +488,10 @@
   font-weight: 600;
   padding: 0 6px;
   cursor: pointer;
+  background: var(--bg-surface);
+  color: var(--text-primary);
 }
 
 .finFin:hover {
-  background: #eaf3de !important;
+  background: var(--bg-hover) !important;
 }

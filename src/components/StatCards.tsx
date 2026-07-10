@@ -40,12 +40,12 @@ const CSS = `
 .sc-card {
   position: relative;
   overflow: hidden;
-  background: #fff;
+  background: var(--bg-surface);
   border-radius: 20px;
   padding: 22px 24px;
-  border: 1px solid rgba(69,123,157,0.08);
-  box-shadow: 0 4px 16px rgba(69,123,157,0.06);
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  border: 1px solid var(--border);
+  box-shadow: var(--card-shadow);
+  transition: transform 0.25s ease, box-shadow 0.25s ease, background-color 0.3s ease, border-color 0.3s ease;
   cursor: default;
 }
 .sc-card::before {
@@ -60,7 +60,7 @@ const CSS = `
 }
 .sc-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 14px 34px rgba(69,123,157,0.14);
+  box-shadow: var(--card-shadow-hover);
 }
 .sc-card:hover::before { transform: scaleX(1); }
 
@@ -100,7 +100,7 @@ const CSS = `
 }
 .sc-label {
   font-size: 13px;
-  color: #94a3b8;
+  color: var(--text-muted);
   font-weight: 500;
 }
 

@@ -68,13 +68,14 @@ const CSS = `
     display: flex;
     flex-direction: column;
     gap: 24px;
-    background: rgba(255,255,255,0.6);
+    background: var(--bg-surface);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
-    border: 1px solid rgba(69,123,157,0.12);
+    border: 1px solid var(--border);
     border-radius: 24px;
     padding: 28px 32px;
-    box-shadow: 0 8px 32px rgba(69,123,157,0.08);
+    box-shadow: var(--card-shadow);
+    transition: background-color 0.3s ease, border-color 0.3s ease;
   }
 
   .ws-header {
@@ -91,15 +92,12 @@ const CSS = `
     font-size: 18px;
     font-weight: 700;
     letter-spacing: .04em;
-    background: linear-gradient(135deg, #1D3557, #457B9D);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    color: var(--text-primary);
   }
 
   .ws-subtitle {
     font-size: 12px;
-    color: rgba(69,123,157,0.6);
+    color: var(--text-muted);
     font-weight: 400;
   }
 
@@ -107,14 +105,14 @@ const CSS = `
     position: relative;
     overflow: hidden;
     padding: 10px 20px;
-    background: linear-gradient(135deg, #457B9D, #1D3557);
+    background: var(--accent);
     color: #fff;
     border: none;
     border-radius: 12px;
     font-size: 13px;
     font-weight: 600;
     cursor: pointer;
-    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    transition: transform 0.25s ease, box-shadow 0.25s ease, background-color 0.3s ease;
     box-shadow: 0 4px 14px rgba(69,123,157,0.35);
   }
   .ws-btn-add::before {
@@ -153,12 +151,12 @@ const CSS = `
     border-radius: 10px;
     font-size: 13px;
     font-weight: 500;
-    color: rgba(172,172,172,0.8);
-    transition: background 0.2s;
+    color: var(--text-muted);
+    transition: background 0.2s, color 0.2s;
   }
   .ws-day-cell.active {
-    background: linear-gradient(135deg, #457B9D18, #1D355710);
-    color: #457B9D;
+    background: var(--bg-surface-2);
+    color: var(--accent);
     font-weight: 700;
   }
   .ws-day-cell.week-label {

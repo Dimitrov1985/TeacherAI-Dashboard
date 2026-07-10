@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom'
 import { AuthProvider } from './context/AuthContext' // ⏳ Временно вернули
 // import { SupabaseAuthProvider } from './context/SupabaseAuthContext' // ✅ Вернём когда исправим Supabase
+import { ThemeProvider } from './context/ThemeContext'
 import ProtectedRoute from './components/ProtectedRoute'
 import Sidebar from './components/Dashboard/Sidebar'
 import RightPanel from './components/Dashboard/RightPanel'
@@ -54,7 +55,10 @@ function MainLayout() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-white lg:h-screen lg:flex-row lg:overflow-hidden">
+    <div
+      className="flex min-h-screen flex-col lg:h-screen lg:flex-row lg:overflow-hidden"
+      style={{ backgroundColor: 'var(--bg-page)' }}
+    >
       <Sidebar />
       <Routes>
         <Route path="/" element={<DashboardPage />} />
@@ -63,9 +67,9 @@ function MainLayout() {
         <Route path="/profile" element={<ProfilePage />} />
           <Route path="/homework" element={<HomeworkPage />} />
           <Route path="/attendance" element={<AttendancePage />} />
-          <Route path="/duties" element={<div className="flex-1 p-8"><h1 className="text-2xl font-bold text-[#1D3557]">Duties (Coming Soon)</h1></div>} />
-          <Route path="/grading" element={<div className="flex-1 p-8"><h1 className="text-2xl font-bold text-[#1D3557]">Grading (Coming Soon)</h1></div>} />
-          <Route path="/alumni" element={<div className="flex-1 p-8"><h1 className="text-2xl font-bold text-[#1D3557]">Alumni (Coming Soon)</h1></div>} />
+          <Route path="/duties" element={<div className="flex-1 p-8" style={{ backgroundColor: 'var(--bg-page)' }}><h1 className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>Duties (Coming Soon)</h1></div>} />
+          <Route path="/grading" element={<div className="flex-1 p-8" style={{ backgroundColor: 'var(--bg-page)' }}><h1 className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>Grading (Coming Soon)</h1></div>} />
+          <Route path="/alumni" element={<div className="flex-1 p-8" style={{ backgroundColor: 'var(--bg-page)' }}><h1 className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>Alumni (Coming Soon)</h1></div>} />
       </Routes>
       <RightPanel
         month={month}
@@ -80,15 +84,17 @@ function MainLayout() {
 
 function App() {
   return (
-    <AuthProvider>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/signup" element={<SignUpPage />} />
-          <Route path="/*" element={<ProtectedRoute><MainLayout /></ProtectedRoute>} />
-        </Routes>
-      </BrowserRouter>
-    </AuthProvider>
+    <ThemeProvider>
+      <AuthProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/signup" element={<SignUpPage />} />
+            <Route path="/*" element={<ProtectedRoute><MainLayout /></ProtectedRoute>} />
+          </Routes>
+        </BrowserRouter>
+      </AuthProvider>
+    </ThemeProvider>
   )
 }
 

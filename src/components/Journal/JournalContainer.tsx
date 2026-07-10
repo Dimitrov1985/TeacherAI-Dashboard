@@ -94,12 +94,12 @@ function gClass(v: GradeValue): string {
   return 'sp'
 }
 
-function gColor(v: number | string | null): string {
+function gColorClass(v: number | string | null): string {
   const n = typeof v === 'string' ? +v : v
-  if (n === 5) return '#1a7a2a'
-  if (n === 4) return '#185fa5'
-  if (n === 3) return '#854f0b'
-  if (n === 2) return '#a32d2d'
+  if (n === 5) return 'grade-color-5'
+  if (n === 4) return 'grade-color-4'
+  if (n === 3) return 'grade-color-3'
+  if (n === 2) return 'grade-color-2'
   return ''
 }
 
@@ -211,7 +211,7 @@ function GradeCell({ value, onSave }: GradeCellProps) {
               onSave('')
               setShowDropdown(false)
             }}
-            style={{ color: '#a32d2d', fontWeight: 600 }}
+            style={{ color: 'var(--grade-2)', fontWeight: 600 }}
           >
             Clear
           </div>
@@ -381,7 +381,7 @@ function JournalTab({
                 }}
                 onClick={(e) => e.stopPropagation()}
               >
-                <h3 style={{ margin: 0, fontSize: '16px', fontWeight: 600, color: '#1D3557' }}>Add Special Column</h3>
+                <h3 style={{ margin: 0, fontSize: '16px', fontWeight: 600, color: 'var(--text-primary)' }}>Add Special Column</h3>
                 <input
                   type="text"
                   placeholder="Title (e.g., Контрольная работа)"
@@ -664,10 +664,10 @@ function AttendanceTab({ students, dates, attendance, onSet }: AttendanceTabProp
                       </td>
                     )
                   })}
-                  <td className="att-stat" style={{ color: absent > 0 ? gColor(2) : gColor(5) }}>
+                  <td className={`att-stat ${absent > 0 ? gColorClass(2) : gColorClass(5)}`}>
                     {absent}
                   </td>
-                  <td className="att-stat" style={{ color: attendancePercent >= 75 ? gColor(5) : gColor(2) }}>
+                  <td className={`att-stat ${attendancePercent >= 75 ? gColorClass(5) : gColorClass(2)}`}>
                     {attendancePercent}%
                   </td>
                 </tr>
@@ -718,8 +718,8 @@ function FinalTab({ students, grades, finalOverride, onFin }: FinalTabProps) {
     <div className="fin-section">
       <div className="stats-row">
         {([5, 4, 3, 2] as const).map((g) => (
-          <div key={g} className="stat-card" style={{ borderColor: gColor(g) }}>
-            <span className="stat-g" style={{ color: gColor(g) }}>
+          <div key={g} className="stat-card">
+            <span className={`stat-g ${gColorClass(g)}`}>
               {g}
             </span>
             <span className="stat-n">{stats[g] ?? 0}</span>
@@ -727,7 +727,7 @@ function FinalTab({ students, grades, finalOverride, onFin }: FinalTabProps) {
           </div>
         ))}
         <div className="stat-card">
-          <span className="stat-g" style={{ color: '#9a9a94' }}>
+          <span className="stat-g" style={{ color: 'var(--muted)' }}>
             QU
           </span>
           <span className="stat-n">{ku}%</span>
@@ -753,7 +753,7 @@ function FinalTab({ students, grades, finalOverride, onFin }: FinalTabProps) {
                   {student.firstName} {student.lastName}
                 </td>
                 <td className="fin-avg">{avg ?? '—'}</td>
-                <td className="fin-fin" style={{ color: gColor(fin) }} onClick={() => handleFin(si, fin)}>
+                <td className={`fin-fin ${gColorClass(fin)}`} onClick={() => handleFin(si, fin)}>
                   {fin ?? '—'}
                 </td>
               </tr>
@@ -1141,15 +1141,15 @@ export default function JournalContainer() {
   return (
     <div className="flex flex-1 flex-col gap-6">
       <style>{`
-        :root {
-          --bg:#f5f5f0;--surface:#fff;--surface1:#f8f8f6;
-          --border:#d0cfc8;--border-s:#b0afa8;
-          --text:#1a1a18;--text2:#5a5a56;--muted:#9a9a94;
-          --accent:#185fa5;--accent-bg:#e6f1fb;
-          --g5:#1a7a2a;--g5bg:#eaf3de;
-          --g4:#185fa5;--g4bg:#e6f1fb;
-          --g3:#854f0b;--g3bg:#faeeda;
-          --g2:#a32d2d;--g2bg:#fcebeb;
+        .flex.flex-1.flex-col.gap-6 {
+          --bg:var(--bg-page);--surface:var(--bg-surface);--surface1:var(--bg-surface-hover);
+          --border:var(--border);--border-s:var(--border-strong, #b0afa8);
+          --text:var(--text-primary);--text2:var(--text-secondary);--muted:var(--text-muted);
+          --accent:var(--accent);--accent-bg:var(--bg-hover);
+          --g5:var(--grade-5);--g5bg:var(--bg-hover);
+          --g4:var(--grade-4);--g4bg:var(--bg-hover);
+          --g3:var(--grade-3);--g3bg:var(--bg-hover);
+          --g2:var(--grade-2);--g2bg:var(--bg-error);
           --r:8px;--r-sm:4px;
         }
         .toolbar{margin-bottom:10px;display:flex;gap:8px;align-items:center}
@@ -1163,39 +1163,39 @@ export default function JournalContainer() {
         th,td{border:0.5px solid var(--border);padding:0;text-align:center;white-space:nowrap}
         .th-name{text-align:left;padding:6px 11px;background:var(--accent-bg);color:var(--accent);font-weight:500;font-size:12px;min-width:245px;max-width:245px;width:245px;position:sticky;left:0;z-index:3}
         .th-month{background:var(--accent-bg);color:var(--accent);font-weight:500;font-size:11px;padding:4px 6px;min-width:26px}
-        .th-day{background:#f0f4f8;font-size:11px;color:var(--text2);font-weight:400;padding:3px 2px;min-width:26px;position:relative}
+        .th-day{background:var(--surface);font-size:11px;color:var(--text2);font-weight:400;padding:3px 2px;min-width:26px;position:relative}
         .th-day .del-btn{display:none;font-size:10px;color:var(--g2);cursor:pointer;background:none;border:none;padding:0;line-height:1}
         .th-day:hover .del-btn{display:block}
         .th-day-test{background:#fff3cd;color:#856404;font-weight:600}
         .th-day-exam{background:#f8d7da;color:#721c24;font-weight:600}
         .th-day-homework{background:#d1ecf1;color:#0c5460;font-weight:600}
-        .th-cb{background:#f0f4fa;padding:4px 2px;min-width:26px;cursor:pointer}
+        .th-cb{background:var(--surface);padding:4px 2px;min-width:26px;cursor:pointer}
         .cb-wrap{display:flex;align-items:center;justify-content:center;height:26px}
-        .cb{width:14px;height:14px;border-radius:2px;border:1.5px solid var(--border-s);display:flex;align-items:center;justify-content:center;background:white}
+        .cb{width:14px;height:14px;border-radius:2px;border:1.5px solid var(--border-s);display:flex;align-items:center;justify-content:center;background:var(--surface)}
         .cb.checked{background:var(--accent);border-color:var(--accent)}
         .cb.checked::after{content:'✓';color:white;font-size:10px;font-weight:700}
         .th-sum{background:var(--accent-bg);color:var(--accent);font-size:11px;font-weight:500;padding:4px 5px;min-width:56px}
-        .sep-col{background:#ebebea!important;width:5px;padding:0;border:none}
+        .sep-col{background:var(--border)!important;width:5px;padding:0;border:none}
         .td-name{text-align:left;padding:4px 11px;font-size:12px;background:var(--surface);min-width:245px;max-width:245px;width:245px;position:sticky;left:0;z-index:1}
         .row-alt td{background:var(--surface1)}.row-alt .td-name{background:var(--surface1)}
         tbody tr:hover td{background:var(--accent-bg)!important}
         .g-cell{width:26px;height:26px;text-align:center;vertical-align:middle;cursor:pointer;padding:0;position:relative}
         .g-val{font-size:13px;font-weight:500;line-height:26px;display:block}
-        .g-val.g5{color:#22c55e}
-        .g-val.g4{color:#3b82f6}
-        .g-val.g3{color:#f97316}
-        .g-val.g2{color:#ffffff;background:#ef4444}
-        .g-val.sp{color:#9ca3af}
+        .g-val.g5{color:var(--g5)}
+        .g-val.g4{color:var(--g4)}
+        .g-val.g3{color:var(--g3)}
+        .g-val.g2{color:var(--g2)}
+        .g-val.sp{color:var(--muted)}
         .td-avg{font-size:12px;font-weight:500;color:var(--text2);padding:0 5px}
         .td-fin{font-size:13px;font-weight:600;padding:0 5px;cursor:pointer}
         .td-fin:hover{background:var(--g5bg)!important}
-        .g-input{position:absolute;inset:0;width:100%;height:100%;text-align:center;font-size:12px;font-weight:500;border:1.5px solid var(--accent);border-radius:3px;background:#fff;color:var(--text);padding:0;outline:none}
+        .g-input{position:absolute;inset:0;width:100%;height:100%;text-align:center;font-size:12px;font-weight:500;border:1.5px solid var(--accent);border-radius:3px;background:var(--surface);color:var(--text);padding:0;outline:none}
         .legend{margin-top:8px;font-size:11px;color:var(--muted)}
         .att-tbl-wrap{overflow-x:auto;border:1px solid var(--border-s);border-radius:var(--r)}
         .att-tbl{border-collapse:collapse;width:100%;min-width:600px}
         .att-tbl th,.att-tbl td{border:0.5px solid var(--border);text-align:center;white-space:nowrap}
         .att-th-name{text-align:left;padding:5px 11px;background:var(--accent-bg);color:var(--accent);font-size:12px;font-weight:500;min-width:170px}
-        .att-th-day{background:#f0f4f8;font-size:10px;color:var(--text2);padding:3px 2px;min-width:27px}
+        .att-th-day{background:var(--surface);font-size:10px;color:var(--text2);padding:3px 2px;min-width:27px}
         .att-th-stat{background:var(--accent-bg);color:var(--accent);font-size:11px;padding:4px 8px}
         .att-name{text-align:left;padding:4px 11px;font-size:12px}
         .att-cell{cursor:pointer;font-size:11px;font-weight:500;height:27px;position:relative}
@@ -1229,6 +1229,21 @@ export default function JournalContainer() {
         .grade-option:hover{background:var(--accent-bg)}
         .grade-option:first-child{border-radius:var(--r-sm) var(--r-sm) 0 0}
         .grade-option:last-child{border-radius:0 0 var(--r-sm) var(--r-sm)}
+        .grade-color-5{color:var(--g5)}
+        .grade-color-4{color:var(--g4)}
+        .grade-color-3{color:var(--g3)}
+        .grade-color-2{color:var(--g2)}
+        table{background:var(--surface)}
+        .tbl-wrap{background:var(--surface)}
+        .att-tbl-wrap{background:var(--surface)}
+        .att-tbl{background:var(--surface)}
+        .fin-tbl-wrap{background:var(--surface)}
+        .fin-tbl{background:var(--surface)}
+        .td-name{color:var(--text)}
+        .att-name{color:var(--text)}
+        .fin-name{color:var(--text)}
+        .stat-g{color:var(--text)}
+        .stat-n{color:var(--text)}
       `}</style>
 
       {/* Controls */}
@@ -1237,7 +1252,14 @@ export default function JournalContainer() {
           <select
             value={selectedClassId}
             onChange={(e) => setSelectedClassId(e.target.value)}
-            className="rounded-lg border border-[#DCE8F5] px-4 py-3 text-sm text-[#1D3557] outline-none transition-colors focus:border-[#457B9D]"
+            className="rounded-lg px-4 py-3 text-sm outline-none transition-colors"
+            style={{
+              backgroundColor: 'var(--bg-surface)',
+              border: '1px solid var(--border)',
+              color: 'var(--text-primary)',
+            }}
+            onFocus={(e) => e.currentTarget.style.borderColor = 'var(--accent)'}
+            onBlur={(e) => e.currentTarget.style.borderColor = 'var(--border)'}
           >
             <option value="">Select Class</option>
             {classes.map((c) => (
@@ -1251,7 +1273,14 @@ export default function JournalContainer() {
             <select
               value={selectedSubjectId}
               onChange={(e) => setSelectedSubjectId(e.target.value)}
-              className="rounded-lg border border-[#DCE8F5] px-4 py-3 text-sm text-[#1D3557] outline-none transition-colors focus:border-[#457B9D]"
+              className="rounded-lg px-4 py-3 text-sm outline-none transition-colors"
+              style={{
+                backgroundColor: 'var(--bg-surface)',
+                border: '1px solid var(--border)',
+                color: 'var(--text-primary)',
+              }}
+              onFocus={(e) => e.currentTarget.style.borderColor = 'var(--accent)'}
+              onBlur={(e) => e.currentTarget.style.borderColor = 'var(--border)'}
             >
               <option value="">Select Subject</option>
               {availableSubjects.map((s) => (
@@ -1265,7 +1294,10 @@ export default function JournalContainer() {
           {selectedClassId && !showAddStudent && (
             <button
               onClick={() => setShowAddStudent(true)}
-              className="flex items-center gap-2 rounded-lg bg-[#457B9D] px-4 py-3 text-sm font-medium text-white transition-colors hover:bg-[#1D3557]"
+              className="flex items-center gap-2 rounded-lg px-4 py-3 text-sm font-medium text-white transition-colors"
+              style={{ backgroundColor: 'var(--accent)' }}
+              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--accent-hover)'}
+              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--accent)'}
             >
               <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -1281,7 +1313,14 @@ export default function JournalContainer() {
                 value={newStudentId}
                 onChange={(e) => setNewStudentId(e.target.value)}
                 placeholder="ID (e.g., 1, 2, 3)"
-                className="w-24 rounded-lg border border-[#DCE8F5] px-4 py-3 text-sm text-[#1D3557] outline-none transition-colors focus:border-[#457B9D]"
+                className="w-24 rounded-lg px-4 py-3 text-sm outline-none transition-colors"
+                style={{
+                  backgroundColor: 'var(--bg-surface)',
+                  border: '1px solid var(--border)',
+                  color: 'var(--text-primary)',
+                }}
+                onFocus={(e) => e.currentTarget.style.borderColor = 'var(--accent)'}
+                onBlur={(e) => e.currentTarget.style.borderColor = 'var(--border)'}
                 autoFocus
               />
               <input
@@ -1289,14 +1328,29 @@ export default function JournalContainer() {
                 value={newStudentFirstName}
                 onChange={(e) => setNewStudentFirstName(e.target.value)}
                 placeholder="First Name"
-                className="rounded-lg border border-[#DCE8F5] px-4 py-3 text-sm text-[#1D3557] outline-none transition-colors focus:border-[#457B9D]"
+                className="rounded-lg px-4 py-3 text-sm outline-none transition-colors"
+                style={{
+                  backgroundColor: 'var(--bg-surface)',
+                  border: '1px solid var(--border)',
+                  color: 'var(--text-primary)',
+                }}
+                onFocus={(e) => e.currentTarget.style.borderColor = 'var(--accent)'}
+                onBlur={(e) => e.currentTarget.style.borderColor = 'var(--border)'}
               />
               <input
                 type="text"
                 value={newStudentLastName}
                 onChange={(e) => setNewStudentLastName(e.target.value)}
                 placeholder="Last Name"
-                className="rounded-lg border border-[#DCE8F5] px-4 py-3 text-sm text-[#1D3557] outline-none transition-colors focus:border-[#457B9D]"
+                className="rounded-lg px-4 py-3 text-sm outline-none transition-colors"
+                style={{
+                  backgroundColor: 'var(--bg-surface)',
+                  border: '1px solid var(--border)',
+                  color: 'var(--text-primary)',
+                }}
+                onFocus={(e) => e.currentTarget.style.borderColor = 'var(--accent)'}
+                onBlur={(e) => e.currentTarget.style.borderColor = 'var(--border)'}
+
                 onKeyDown={(e) => {
                   if (e.key === 'Enter') handleAddStudent()
                   if (e.key === 'Escape') setShowAddStudent(false)

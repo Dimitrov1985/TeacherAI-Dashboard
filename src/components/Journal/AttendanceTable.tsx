@@ -109,16 +109,16 @@ export default function AttendanceTable({ students, dates, attendance, onAttenda
                   {row.map((val, ci) => (
                     <AttendanceCell key={ci} value={val} onSave={(v) => onAttendance(si, ci, v)} />
                   ))}
-                  <td className={styles.attStat} style={{ color: '#1a7a2a' }}>
+                  <td className={`${styles.attStat} ${styles.sPresent}`}>
                     {present}
                   </td>
-                  <td className={styles.attStat} style={{ color: '#a32d2d' }}>
+                  <td className={`${styles.attStat} ${styles.sAbsent}`}>
                     {absent}
                   </td>
-                  <td className={styles.attStat} style={{ color: '#854f0b' }}>
+                  <td className={`${styles.attStat} ${styles.sLate}`}>
                     {late}
                   </td>
-                  <td className={styles.attStat} style={{ color: rate >= 80 ? '#1a7a2a' : '#a32d2d' }}>
+                  <td className={`${styles.attStat} ${rate >= 80 ? styles.sPresent : styles.sAbsent}`}>
                     {rate}%
                   </td>
                 </tr>

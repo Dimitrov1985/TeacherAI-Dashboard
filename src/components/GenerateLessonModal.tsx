@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import type { GeneratedLessonPlan } from '../data/lessonDetails'
+import GeneratingLoader from './GeneratingLoader'
 // import { authenticatedFetch, handleAPIResponse, APIError } from '../lib/api' // ⏳ Требует Supabase JWT
 
 type GenerateLessonModalProps = {
@@ -70,30 +71,55 @@ export default function GenerateLessonModal({ onClose, onGenerate }: GenerateLes
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 p-4"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}
       onClick={loading ? undefined : onClose}
     >
-      <form
-        onClick={(e) => e.stopPropagation()}
-        onSubmit={handleSubmit}
-        className="flex w-full max-w-lg flex-col gap-5 rounded-2xl bg-white p-6 shadow-xl"
-      >
+      {loading ? (
+        <GeneratingLoader />
+      ) : (
+        <form
+          onClick={(e) => e.stopPropagation()}
+          onSubmit={handleSubmit}
+          className="flex w-full max-w-lg flex-col gap-5 rounded-2xl p-6 shadow-xl"
+          style={{
+            backgroundColor: 'var(--bg-surface)',
+            border: '1px solid var(--border)',
+          }}
+        >
         <div className="flex items-center justify-between">
-          <h3 className="text-xl font-semibold text-[#1D3557]">✨ Сгенерировать план урока</h3>
+          <h3 className="text-xl font-semibold" style={{ color: 'var(--text-primary)' }}>✨ Сгенерировать план урока</h3>
           <button
             type="button"
             onClick={onClose}
             disabled={loading}
-            className="text-2xl text-[#B1B1B1] transition-colors hover:text-[#1D3557] disabled:opacity-50"
+            className="text-2xl transition-colors disabled:opacity-50"
+            style={{ color: 'var(--text-muted)' }}
+            onMouseEnter={(e) => !loading && (e.currentTarget.style.color = 'var(--text-primary)')}
+            onMouseLeave={(e) => !loading && (e.currentTarget.style.color = 'var(--text-muted)')}
           >
             ×
           </button>
         </div>
 
         <div className="flex flex-col gap-1">
-          <label className="text-sm font-medium text-[#1D3557]">Фото учебника</label>
+          <label className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>Фото учебника</label>
           <div className="flex flex-col gap-3">
-            <label className="flex min-h-[200px] cursor-pointer flex-col items-center justify-center gap-3 rounded-xl border-2 border-dashed border-[#DCE8F5] bg-[#f8f9fa] p-6 transition-colors hover:border-[#457B9D] hover:bg-[#f0f6ff]">
+            <label
+              className="flex min-h-[200px] cursor-pointer flex-col items-center justify-center gap-3 rounded-xl border-2 border-dashed p-6 transition-colors"
+              style={{
+                borderColor: 'var(--border)',
+                backgroundColor: 'var(--bg-surface-2)',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.borderColor = 'var(--accent)';
+                e.currentTarget.style.backgroundColor = 'var(--bg-page)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.borderColor = 'var(--border)';
+                e.currentTarget.style.backgroundColor = 'var(--bg-surface-2)';
+              }}
+            >
               {preview ? (
                 <div className="relative w-full">
                   <img
@@ -118,9 +144,13 @@ export default function GenerateLessonModal({ onClose, onGenerate }: GenerateLes
                 </div>
               ) : (
                 <>
-                  <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[#457B9D]/10">
+                  <div
+                    className="flex h-16 w-16 items-center justify-center rounded-full"
+                    style={{ backgroundColor: 'var(--accent)20' }}
+                  >
                     <svg
-                      className="h-8 w-8 text-[#457B9D]"
+                      className="h-8 w-8"
+                      style={{ color: 'var(--accent)' }}
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -134,10 +164,10 @@ export default function GenerateLessonModal({ onClose, onGenerate }: GenerateLes
                     </svg>
                   </div>
                   <div className="text-center">
-                    <p className="text-sm font-medium text-[#1D3557]">
+                    <p className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>
                       Нажмите для загрузки фото
                     </p>
-                    <p className="text-xs text-[#B1B1B1]">PNG, JPG до 10MB</p>
+                    <p className="text-xs" style={{ color: 'var(--text-muted)' }}>PNG, JPG до 10MB</p>
                   </div>
                 </>
               )}
@@ -153,26 +183,36 @@ export default function GenerateLessonModal({ onClose, onGenerate }: GenerateLes
           </div>
         </div>
 
-        {error && <p className="text-sm text-[#CE1821]">{error}</p>}
+        {error && <p className="text-sm" style={{ color: '#CE1821' }}>{error}</p>}
 
         <div className="flex gap-3">
           <button
             type="button"
             onClick={onClose}
             disabled={loading}
-            className="flex-1 rounded-lg border border-[#DCE8F5] px-4 py-2.5 text-sm font-medium text-[#457B9D] transition-colors hover:bg-[#DCE8F5] disabled:opacity-50"
+            className="flex-1 rounded-lg px-4 py-2.5 text-sm font-medium transition-colors disabled:opacity-50"
+            style={{
+              border: '1px solid var(--border)',
+              color: 'var(--text-secondary)',
+            }}
+            onMouseEnter={(e) => !loading && (e.currentTarget.style.backgroundColor = 'var(--bg-surface-2)')}
+            onMouseLeave={(e) => !loading && (e.currentTarget.style.backgroundColor = 'transparent')}
           >
             Отмена
           </button>
           <button
             type="submit"
             disabled={loading}
-            className="flex-1 rounded-lg bg-[#457B9D] px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-[#1D3557] disabled:opacity-50"
+            className="flex-1 rounded-lg px-4 py-2.5 text-sm font-medium text-white transition-colors disabled:opacity-50"
+            style={{ backgroundColor: 'var(--accent)' }}
+            onMouseEnter={(e) => !loading && (e.currentTarget.style.backgroundColor = 'var(--accent-hover)')}
+            onMouseLeave={(e) => !loading && (e.currentTarget.style.backgroundColor = 'var(--accent)')}
           >
-            {loading ? '⏳ Генерация...' : 'Сгенерировать план'}
+            Сгенерировать план
           </button>
         </div>
       </form>
+      )}
     </div>
   )
 }

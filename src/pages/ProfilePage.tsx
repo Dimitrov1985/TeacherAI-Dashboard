@@ -36,7 +36,10 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="flex flex-1 flex-col overflow-y-auto bg-white p-8">
+    <div
+      className="flex flex-1 flex-col overflow-y-auto p-8"
+      style={{ backgroundColor: 'var(--bg-page)' }}
+    >
       <div className="w-full max-w-4xl">
         <h1 className="mb-6 text-3xl font-bold text-[#1D3557]">Мой профиль</h1>
 

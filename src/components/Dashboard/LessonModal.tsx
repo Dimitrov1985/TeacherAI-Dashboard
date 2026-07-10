@@ -60,46 +60,72 @@ export default function LessonModal({ initial, defaultDay = 0, onSave, onDelete,
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 p-4"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}
       onClick={onClose}
     >
       <form
         onClick={(event) => event.stopPropagation()}
         onSubmit={handleSubmit}
-        className="flex w-full max-w-sm flex-col gap-4 rounded-2xl bg-white p-5 shadow-xl"
+        className="flex w-full max-w-sm flex-col gap-4 rounded-2xl p-5 shadow-xl"
+        style={{
+          backgroundColor: 'var(--bg-surface)',
+          border: '1px solid var(--border)',
+        }}
       >
-        <h3 className="text-base font-semibold text-[#1D3557]">
+        <h3 className="text-base font-semibold" style={{ color: 'var(--text-primary)' }}>
           {initial ? 'Edit lesson' : 'Add lesson'}
         </h3>
 
-        <label className="flex flex-col gap-1 text-sm text-[#457B9D]">
+        <label className="flex flex-col gap-1 text-sm" style={{ color: 'var(--text-secondary)' }}>
           Subject
           <input
             type="text"
             value={title}
             onChange={(event) => setTitle(event.target.value)}
-            className="rounded-lg border border-[#DCE8F5] px-3 py-2 text-sm text-[#1D3557] outline-none focus:border-[#457B9D]"
+            className="rounded-lg px-3 py-2 text-sm outline-none"
+            style={{
+              backgroundColor: 'var(--bg-surface)',
+              border: '1px solid var(--border)',
+              color: 'var(--text-primary)',
+            }}
+            onFocus={(e) => e.currentTarget.style.borderColor = 'var(--accent)'}
+            onBlur={(e) => e.currentTarget.style.borderColor = 'var(--border)'}
             placeholder="e.g., Mathematics"
           />
         </label>
 
-        <label className="flex flex-col gap-1 text-sm text-[#457B9D]">
+        <label className="flex flex-col gap-1 text-sm" style={{ color: 'var(--text-secondary)' }}>
           Class
           <input
             type="text"
             value={className}
             onChange={(event) => setClassName(event.target.value)}
-            className="rounded-lg border border-[#DCE8F5] px-3 py-2 text-sm text-[#1D3557] outline-none focus:border-[#457B9D]"
+            className="rounded-lg px-3 py-2 text-sm outline-none"
+            style={{
+              backgroundColor: 'var(--bg-surface)',
+              border: '1px solid var(--border)',
+              color: 'var(--text-primary)',
+            }}
+            onFocus={(e) => e.currentTarget.style.borderColor = 'var(--accent)'}
+            onBlur={(e) => e.currentTarget.style.borderColor = 'var(--border)'}
             placeholder="e.g., 10A"
           />
         </label>
 
-        <label className="flex flex-col gap-1 text-sm text-[#457B9D]">
+        <label className="flex flex-col gap-1 text-sm" style={{ color: 'var(--text-secondary)' }}>
           Day
           <select
             value={day}
             onChange={(event) => setDay(Number(event.target.value))}
-            className="rounded-lg border border-[#DCE8F5] px-3 py-2 text-sm text-[#1D3557] outline-none focus:border-[#457B9D]"
+            className="rounded-lg px-3 py-2 text-sm outline-none"
+            style={{
+              backgroundColor: 'var(--bg-surface)',
+              border: '1px solid var(--border)',
+              color: 'var(--text-primary)',
+            }}
+            onFocus={(e) => e.currentTarget.style.borderColor = 'var(--accent)'}
+            onBlur={(e) => e.currentTarget.style.borderColor = 'var(--border)'}
           >
             {DAY_LABELS.map((label, index) => (
               <option key={label} value={index}>
@@ -110,28 +136,42 @@ export default function LessonModal({ initial, defaultDay = 0, onSave, onDelete,
         </label>
 
         <div className="flex gap-3">
-          <label className="flex flex-1 flex-col gap-1 text-sm text-[#457B9D]">
+          <label className="flex flex-1 flex-col gap-1 text-sm" style={{ color: 'var(--text-secondary)' }}>
             Start
             <input
               type="time"
               value={start}
               onChange={(event) => setStart(event.target.value)}
-              className="rounded-lg border border-[#DCE8F5] px-3 py-2 text-sm text-[#1D3557] outline-none focus:border-[#457B9D]"
+              className="rounded-lg px-3 py-2 text-sm outline-none"
+              style={{
+                backgroundColor: 'var(--bg-surface)',
+                border: '1px solid var(--border)',
+                color: 'var(--text-primary)',
+              }}
+              onFocus={(e) => e.currentTarget.style.borderColor = 'var(--accent)'}
+              onBlur={(e) => e.currentTarget.style.borderColor = 'var(--border)'}
             />
           </label>
-          <label className="flex flex-1 flex-col gap-1 text-sm text-[#457B9D]">
+          <label className="flex flex-1 flex-col gap-1 text-sm" style={{ color: 'var(--text-secondary)' }}>
             End
             <input
               type="time"
               value={end}
               onChange={(event) => setEnd(event.target.value)}
-              className="rounded-lg border border-[#DCE8F5] px-3 py-2 text-sm text-[#1D3557] outline-none focus:border-[#457B9D]"
+              className="rounded-lg px-3 py-2 text-sm outline-none"
+              style={{
+                backgroundColor: 'var(--bg-surface)',
+                border: '1px solid var(--border)',
+                color: 'var(--text-primary)',
+              }}
+              onFocus={(e) => e.currentTarget.style.borderColor = 'var(--accent)'}
+              onBlur={(e) => e.currentTarget.style.borderColor = 'var(--border)'}
             />
           </label>
         </div>
 
         <div className="flex flex-col gap-1">
-          <span className="text-sm text-[#457B9D]">Color</span>
+          <span className="text-sm" style={{ color: 'var(--text-secondary)' }}>Color</span>
           <div className="flex gap-2">
             {COLOR_PRESETS.map((preset) => (
               <button
@@ -139,23 +179,24 @@ export default function LessonModal({ initial, defaultDay = 0, onSave, onDelete,
                 type="button"
                 aria-label={preset.name}
                 onClick={() => setPresetName(preset.name)}
-                className={`h-7 w-7 rounded-full border-2 ${
-                  presetName === preset.name ? 'border-[#1D3557]' : 'border-transparent'
-                }`}
-                style={{ backgroundColor: preset.color }}
+                className="h-7 w-7 rounded-full border-2"
+                style={{
+                  backgroundColor: preset.color,
+                  borderColor: presetName === preset.name ? 'var(--text-primary)' : 'transparent',
+                }}
               />
             ))}
           </div>
         </div>
 
-        {error && <p className="text-xs text-[#CE1821]">{error}</p>}
+        {error && <p className="text-xs text-red-600">{error}</p>}
 
         <div className="flex items-center justify-between gap-2 pt-1">
           {initial && onDelete ? (
             <button
               type="button"
               onClick={onDelete}
-              className="rounded-lg px-3 py-2 text-sm font-medium text-[#CE1821] hover:bg-[#FFBABE]/40"
+              className="rounded-lg px-3 py-2 text-sm font-medium text-red-600 transition-colors hover:bg-red-600/10"
             >
               Delete
             </button>
@@ -166,13 +207,22 @@ export default function LessonModal({ initial, defaultDay = 0, onSave, onDelete,
             <button
               type="button"
               onClick={onClose}
-              className="rounded-lg px-3 py-2 text-sm font-medium text-[#457B9D] hover:bg-[#DCE8F5]"
+              className="rounded-lg px-3 py-2 text-sm font-medium transition-colors"
+              style={{
+                border: '1px solid var(--border)',
+                color: 'var(--text-secondary)',
+              }}
+              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--bg-surface-2)'}
+              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="rounded-lg bg-[#457B9D] px-4 py-2 text-sm font-medium text-white hover:bg-[#1D3557]"
+              className="rounded-lg px-4 py-2 text-sm font-medium text-white transition-colors"
+              style={{ backgroundColor: 'var(--accent)' }}
+              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--accent-hover)'}
+              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--accent)'}
             >
               Save
             </button>

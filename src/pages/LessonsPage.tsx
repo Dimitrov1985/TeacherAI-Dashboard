@@ -85,30 +85,45 @@ export default function LessonsPage() {
   })
 
   return (
-    <main className="flex flex-1 flex-col overflow-y-auto bg-white p-8">
+    <main
+      className="flex flex-1 flex-col overflow-y-auto p-8"
+      style={{ backgroundColor: 'var(--bg-page)' }}
+    >
       <div className="mx-auto w-full max-w-7xl">
         <div className="mb-6 flex items-center justify-between">
-          <h1 className="text-3xl font-bold text-[#1D3557]">Мои уроки</h1>
+          <h1 className="text-3xl font-bold" style={{ color: 'var(--text-primary)' }}>Мои уроки</h1>
 
           {/* Переключатель вида */}
-          <div className="flex gap-2 rounded-lg bg-[#f0f6ff] p-1">
+          <div className="flex gap-2 rounded-lg p-1" style={{ backgroundColor: 'var(--bg-surface-2)' }}>
             <button
               onClick={() => setViewMode('grid')}
-              className={`rounded px-3 py-1.5 text-sm font-medium transition-colors ${
-                viewMode === 'grid'
-                  ? 'bg-white text-[#457B9D] shadow-sm'
-                  : 'text-[#B1B1B1] hover:text-[#457B9D]'
-              }`}
+              className="rounded px-3 py-1.5 text-sm font-medium transition-colors shadow-sm"
+              style={{
+                backgroundColor: viewMode === 'grid' ? 'var(--bg-surface)' : 'transparent',
+                color: viewMode === 'grid' ? 'var(--accent)' : 'var(--text-muted)',
+              }}
+              onMouseEnter={(e) => {
+                if (viewMode !== 'grid') e.currentTarget.style.color = 'var(--accent)'
+              }}
+              onMouseLeave={(e) => {
+                if (viewMode !== 'grid') e.currentTarget.style.color = 'var(--text-muted)'
+              }}
             >
               <span className="text-base">▦</span>
             </button>
             <button
               onClick={() => setViewMode('list')}
-              className={`rounded px-3 py-1.5 text-sm font-medium transition-colors ${
-                viewMode === 'list'
-                  ? 'bg-white text-[#457B9D] shadow-sm'
-                  : 'text-[#B1B1B1] hover:text-[#457B9D]'
-              }`}
+              className="rounded px-3 py-1.5 text-sm font-medium transition-colors shadow-sm"
+              style={{
+                backgroundColor: viewMode === 'list' ? 'var(--bg-surface)' : 'transparent',
+                color: viewMode === 'list' ? 'var(--accent)' : 'var(--text-muted)',
+              }}
+              onMouseEnter={(e) => {
+                if (viewMode !== 'list') e.currentTarget.style.color = 'var(--accent)'
+              }}
+              onMouseLeave={(e) => {
+                if (viewMode !== 'list') e.currentTarget.style.color = 'var(--text-muted)'
+              }}
             >
               <span className="text-base">☰</span>
             </button>
@@ -122,14 +137,28 @@ export default function LessonsPage() {
             placeholder="Фильтр по классу..."
             value={filterGrade}
             onChange={(e) => setFilterGrade(e.target.value)}
-            className="rounded-lg border border-[#DCE8F5] px-4 py-2 text-sm outline-none focus:border-[#457B9D]"
+            className="rounded-lg px-4 py-2 text-sm outline-none"
+            style={{
+              backgroundColor: 'var(--bg-surface)',
+              border: '1px solid var(--border)',
+              color: 'var(--text-primary)',
+            }}
+            onFocus={(e) => e.currentTarget.style.borderColor = 'var(--accent)'}
+            onBlur={(e) => e.currentTarget.style.borderColor = 'var(--border)'}
           />
           <input
             type="text"
             placeholder="Фильтр по теме..."
             value={filterTopic}
             onChange={(e) => setFilterTopic(e.target.value)}
-            className="rounded-lg border border-[#DCE8F5] px-4 py-2 text-sm outline-none focus:border-[#457B9D]"
+            className="rounded-lg px-4 py-2 text-sm outline-none"
+            style={{
+              backgroundColor: 'var(--bg-surface)',
+              border: '1px solid var(--border)',
+              color: 'var(--text-primary)',
+            }}
+            onFocus={(e) => e.currentTarget.style.borderColor = 'var(--accent)'}
+            onBlur={(e) => e.currentTarget.style.borderColor = 'var(--border)'}
           />
         </div>
 
@@ -142,14 +171,23 @@ export default function LessonsPage() {
             {/* Карточка для генерации урока */}
             <button
               onClick={handleGenerateClick}
-              className="flex flex-col items-center justify-center gap-3 rounded-2xl border-2 border-dashed border-[#DCE8F5] p-6 text-center transition-colors hover:border-[#457B9D] hover:bg-[#DCE8F5]/50"
+              className="flex flex-col items-center justify-center gap-3 rounded-2xl border-2 border-dashed p-6 text-center transition-colors"
+              style={{ borderColor: 'var(--border)', backgroundColor: 'var(--bg-surface)' }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.borderColor = 'var(--accent)'
+                e.currentTarget.style.backgroundColor = 'var(--bg-surface-2)'
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.borderColor = 'var(--border)'
+                e.currentTarget.style.backgroundColor = 'var(--bg-surface)'
+              }}
             >
-              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[#457B9D]/10">
+              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[var(--accent)]/10">
                 <span className="text-3xl">✨</span>
               </div>
               <div>
-                <p className="font-semibold text-[#1D3557]">Сгенерировать план урока</p>
-                <p className="text-sm text-[#B1B1B1]">Создайте план с помощью AI</p>
+                <p className="font-semibold text-[var(--text-primary)]">Сгенерировать план урока</p>
+                <p className="text-sm text-[var(--text-muted)]">Создайте план с помощью AI</p>
               </div>
             </button>
 
@@ -157,44 +195,50 @@ export default function LessonsPage() {
             {filteredPlans.map((lesson) => (
               <div
                 key={lesson.id}
-                className="flex flex-col gap-4 rounded-2xl bg-white p-6 shadow-[0_6px_12px_rgba(148,163,184,0.15)] transition-shadow hover:shadow-xl"
+                className="flex flex-col gap-4 rounded-2xl p-6 transition-shadow"
+                style={{
+                  backgroundColor: 'var(--bg-surface)',
+                  boxShadow: 'var(--card-shadow)',
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.boxShadow = 'var(--card-shadow-hover)'}
+                onMouseLeave={(e) => e.currentTarget.style.boxShadow = 'var(--card-shadow)'}
               >
                 <div className="flex items-start justify-between">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#457B9D]/10 text-2xl">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[var(--accent)]/10 text-2xl">
                     📘
                   </div>
-                  <span className="rounded-full bg-[#3ECD88]/10 px-3 py-1 text-xs font-medium text-[#3ECD88]">
+                  <span className="rounded-full bg-green-500/10 px-3 py-1 text-xs font-medium text-green-500">
                     {lesson.grade}
                   </span>
                 </div>
 
                 <div className="flex flex-col gap-2">
-                  <h3 className="text-lg font-semibold text-[#1D3557]">{lesson.plan.title}</h3>
-                  <p className="line-clamp-2 text-sm text-[#457B9D]">
+                  <h3 className="text-lg font-semibold text-[var(--text-primary)]">{lesson.plan.title}</h3>
+                  <p className="line-clamp-2 text-sm text-[var(--accent)]">
                     {lesson.plan.objectives?.join(', ') || 'Цели урока'}
                   </p>
                   {lesson.linkedLessonId && (
-                    <span className="text-xs text-[#3ECD88]">🔗 Привязан к расписанию</span>
+                    <span className="text-xs text-green-500">🔗 Привязан к расписанию</span>
                   )}
                 </div>
 
                 <div className="flex gap-2">
                   <button
                     onClick={() => handleDownload(lesson)}
-                    className="flex-1 rounded-lg bg-[#457B9D] px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-[#1D3557]"
+                    className="flex-1 rounded-lg bg-[var(--accent)] px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-[var(--accent-hover)]"
                   >
                     Скачать
                   </button>
                   <button
                     onClick={() => handleLinkClick(lesson.id)}
-                    className="rounded-lg border border-[#457B9D] px-3 py-2 text-sm font-medium text-[#457B9D] transition-colors hover:bg-[#457B9D]/10"
+                    className="rounded-lg border border-[var(--accent)] px-3 py-2 text-sm font-medium text-[var(--accent)] transition-colors hover:bg-[var(--accent)]/10"
                     title="Привязать к расписанию"
                   >
                     🔗
                   </button>
                   <button
                     onClick={() => handleDelete(lesson.id)}
-                    className="rounded-lg border border-[#CE1821] px-3 py-2 text-sm font-medium text-[#CE1821] transition-colors hover:bg-[#CE1821]/10"
+                    className="rounded-lg border border-red-600 px-3 py-2 text-sm font-medium text-red-600 transition-colors hover:bg-red-600/10"
                   >
                     🗑️
                   </button>
@@ -210,14 +254,26 @@ export default function LessonsPage() {
             {/* Кнопка генерации в режиме списка */}
             <button
               onClick={handleGenerateClick}
-              className="flex w-full items-center gap-4 rounded-xl border-2 border-dashed border-[#DCE8F5] bg-white p-4 text-left transition-colors hover:border-[#457B9D] hover:bg-[#DCE8F5]/50"
+              className="flex w-full items-center gap-4 rounded-xl border-2 border-dashed p-4 text-left transition-colors"
+              style={{
+                borderColor: 'var(--border)',
+                backgroundColor: 'var(--bg-surface)',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.borderColor = 'var(--accent)'
+                e.currentTarget.style.backgroundColor = 'var(--bg-surface-2)'
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.borderColor = 'var(--border)'
+                e.currentTarget.style.backgroundColor = 'var(--bg-surface)'
+              }}
             >
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#457B9D]/10">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[var(--accent)]/10">
                 <span className="text-2xl">✨</span>
               </div>
               <div>
-                <p className="font-semibold text-[#1D3557]">Сгенерировать план урока</p>
-                <p className="text-xs text-[#B1B1B1]">Создайте план с помощью AI</p>
+                <p className="font-semibold text-[var(--text-primary)]">Сгенерировать план урока</p>
+                <p className="text-xs text-[var(--text-muted)]">Создайте план с помощью AI</p>
               </div>
             </button>
 
@@ -225,42 +281,48 @@ export default function LessonsPage() {
             {filteredPlans.map((lesson) => (
               <div
                 key={lesson.id}
-                className="flex items-center gap-4 rounded-xl bg-white p-4 shadow-[0_4px_8px_rgba(148,163,184,0.1)] transition-shadow hover:shadow-lg"
+                className="flex items-center gap-4 rounded-xl p-4 transition-shadow"
+                style={{
+                  backgroundColor: 'var(--bg-surface)',
+                  boxShadow: 'var(--card-shadow)',
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.boxShadow = 'var(--card-shadow-hover)'}
+                onMouseLeave={(e) => e.currentTarget.style.boxShadow = 'var(--card-shadow)'}
               >
-                <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-lg bg-[#457B9D]/10 text-xl">
+                <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-lg bg-[var(--accent)]/10 text-xl">
                   📘
                 </div>
                 <div className="flex-1">
                   <div className="flex items-center gap-2">
-                    <h3 className="font-semibold text-[#1D3557]">{lesson.plan.title}</h3>
-                    <span className="rounded-full bg-[#3ECD88]/10 px-2 py-0.5 text-xs font-medium text-[#3ECD88]">
+                    <h3 className="font-semibold text-[var(--text-primary)]">{lesson.plan.title}</h3>
+                    <span className="rounded-full bg-green-500/10 px-2 py-0.5 text-xs font-medium text-green-500">
                       {lesson.grade}
                     </span>
                     {lesson.linkedLessonId && (
-                      <span className="text-xs text-[#3ECD88]">🔗</span>
+                      <span className="text-xs text-green-500">🔗</span>
                     )}
                   </div>
-                  <p className="mt-1 line-clamp-1 text-sm text-[#457B9D]">
+                  <p className="mt-1 line-clamp-1 text-sm text-[var(--accent)]">
                     {lesson.plan.objectives?.join(', ') || 'Цели урока'}
                   </p>
                 </div>
                 <div className="flex gap-2">
                   <button
                     onClick={() => handleDownload(lesson)}
-                    className="rounded-lg bg-[#457B9D] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#1D3557]"
+                    className="rounded-lg bg-[var(--accent)] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[var(--accent-hover)]"
                   >
                     Скачать
                   </button>
                   <button
                     onClick={() => handleLinkClick(lesson.id)}
-                    className="rounded-lg border border-[#457B9D] px-3 py-2 text-sm font-medium text-[#457B9D] transition-colors hover:bg-[#457B9D]/10"
+                    className="rounded-lg border border-[var(--accent)] px-3 py-2 text-sm font-medium text-[var(--accent)] transition-colors hover:bg-[var(--accent)]/10"
                     title="Привязать к расписанию"
                   >
                     🔗
                   </button>
                   <button
                     onClick={() => handleDelete(lesson.id)}
-                    className="rounded-lg border border-[#CE1821] px-3 py-2 text-sm font-medium text-[#CE1821] transition-colors hover:bg-[#CE1821]/10"
+                    className="rounded-lg border border-red-600 px-3 py-2 text-sm font-medium text-red-600 transition-colors hover:bg-red-600/10"
                   >
                     🗑️
                   </button>
@@ -280,12 +342,20 @@ export default function LessonsPage() {
 
       {showGradeModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 p-4">
-          <div className="w-full max-w-sm rounded-2xl bg-white p-6 shadow-xl">
-            <h3 className="mb-4 text-xl font-semibold text-[#1D3557]">Укажите класс</h3>
+          <div className="w-full max-w-sm rounded-2xl p-6 shadow-xl" style={{ backgroundColor: 'var(--bg-surface)', border: '1px solid var(--border)' }}>
+            <h3 className="mb-4 text-xl font-semibold text-[var(--text-primary)]">Укажите класс</h3>
             <input
               type="text"
               placeholder="Например: 6А или Grade 6"
-              className="mb-4 w-full rounded-lg border border-[#DCE8F5] px-4 py-2 text-sm outline-none focus:border-[#457B9D]"
+              className="mb-4 w-full rounded-lg px-4 py-2 text-sm outline-none"
+              style={{
+                backgroundColor: 'var(--bg-surface)',
+                border: '1px solid var(--border)',
+                color: 'var(--text-primary)',
+              }}
+              onFocus={(e) => e.currentTarget.style.borderColor = 'var(--accent)'}
+              onBlur={(e) => e.currentTarget.style.borderColor = 'var(--border)'}
+
               onKeyPress={(e) => {
                 if (e.key === 'Enter') {
                   handleSaveWithGrade((e.target as HTMLInputElement).value)
@@ -295,7 +365,7 @@ export default function LessonsPage() {
             <div className="flex gap-3">
               <button
                 onClick={() => setShowGradeModal(false)}
-                className="flex-1 rounded-lg border border-[#DCE8F5] px-4 py-2 text-sm font-medium text-[#457B9D]"
+                className="flex-1 rounded-lg border border-[var(--border)] px-4 py-2 text-sm font-medium text-[var(--accent)]"
               >
                 Отмена
               </button>
@@ -304,7 +374,7 @@ export default function LessonsPage() {
                   const input = document.querySelector('input[placeholder*="класс"]') as HTMLInputElement
                   handleSaveWithGrade(input?.value || '')
                 }}
-                className="flex-1 rounded-lg bg-[#457B9D] px-4 py-2 text-sm font-medium text-white"
+                className="flex-1 rounded-lg bg-[var(--accent)] px-4 py-2 text-sm font-medium text-white"
               >
                 Сохранить
               </button>

@@ -1,4 +1,5 @@
 import { useState, useRef } from 'react'
+import GeneratingLoader from '../GeneratingLoader'
 // import { authenticatedFetch, handleAPIResponse, APIError } from '../../lib/api' // ⏳ Требует Supabase JWT
 
 type GeneratedHomework = {
@@ -83,27 +84,38 @@ export default function GenerateHomeworkModal({
 
   return (
     <div
-      className="fixed inset-0 z-[60] flex items-center justify-center bg-black/40 p-4"
-      onClick={onClose}
+      className="fixed inset-0 z-[60] flex items-center justify-center p-4"
+      style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}
+      onClick={loading ? undefined : onClose}
     >
-      <div
-        onClick={(e) => e.stopPropagation()}
-        className="flex w-full max-w-lg flex-col gap-5 rounded-2xl bg-white p-6 shadow-xl"
-      >
+      {loading ? (
+        <GeneratingLoader />
+      ) : (
+        <div
+          onClick={(e) => e.stopPropagation()}
+          className="flex w-full max-w-lg flex-col gap-5 rounded-2xl p-6 shadow-xl"
+          style={{
+            backgroundColor: 'var(--bg-surface)',
+            border: '1px solid var(--border)',
+          }}
+        >
         <div className="flex items-center justify-between">
           <div>
-            <h3 className="text-xl font-semibold text-[#1D3557]">
+            <h3 className="text-xl font-semibold" style={{ color: 'var(--text-primary)' }}>
               ✨ AI Homework Generator
             </h3>
             {subject && (
-              <p className="mt-1 text-sm text-[#94a3b8]">
+              <p className="mt-1 text-sm" style={{ color: 'var(--text-muted)' }}>
                 {subject} {grade && `• ${grade}`}
               </p>
             )}
           </div>
           <button
             onClick={onClose}
-            className="text-2xl text-[#B1B1B1] transition-colors hover:text-[#1D3557]"
+            className="text-2xl transition-colors"
+            style={{ color: 'var(--text-muted)' }}
+            onMouseEnter={(e) => e.currentTarget.style.color = 'var(--text-primary)'}
+            onMouseLeave={(e) => e.currentTarget.style.color = 'var(--text-muted)'}
           >
             ×
           </button>
@@ -111,7 +123,7 @@ export default function GenerateHomeworkModal({
 
         {/* Topic Input */}
         <div className="flex flex-col gap-1">
-          <label className="text-sm font-medium text-[#1D3557]">
+          <label className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>
             Topic or Description
           </label>
           <textarea
@@ -119,13 +131,20 @@ export default function GenerateHomeworkModal({
             onChange={(e) => setTopic(e.target.value)}
             placeholder="e.g., Photosynthesis process, Chapter 5 summary, Quadratic equations..."
             rows={3}
-            className="resize-none rounded-lg border border-[#DCE8F5] px-3 py-2 text-sm outline-none focus:border-[#7c3aed]"
+            className="resize-none rounded-lg px-3 py-2 text-sm outline-none"
+            style={{
+              backgroundColor: 'var(--bg-surface)',
+              border: '1px solid var(--border)',
+              color: 'var(--text-primary)',
+            }}
+            onFocus={(e) => e.currentTarget.style.borderColor = 'var(--accent)'}
+            onBlur={(e) => e.currentTarget.style.borderColor = 'var(--border)'}
           />
         </div>
 
         {/* Image Upload */}
         <div className="flex flex-col gap-2">
-          <label className="text-sm font-medium text-[#1D3557]">
+          <label className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>
             Or Upload Textbook Page
           </label>
           <input
@@ -137,7 +156,20 @@ export default function GenerateHomeworkModal({
           />
           <button
             onClick={() => fileInputRef.current?.click()}
-            className="rounded-lg border-2 border-dashed border-[#DCE8F5] bg-[#f8f9fa] px-4 py-3 text-sm text-[#94a3b8] transition-colors hover:border-[#7c3aed] hover:bg-[#7c3aed]/5"
+            className="rounded-lg border-2 border-dashed px-4 py-3 text-sm transition-colors"
+            style={{
+              borderColor: 'var(--border)',
+              backgroundColor: 'var(--bg-surface-2)',
+              color: 'var(--text-muted)',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.borderColor = 'var(--accent)'
+              e.currentTarget.style.backgroundColor = 'var(--bg-page)'
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.borderColor = 'var(--border)'
+              e.currentTarget.style.backgroundColor = 'var(--bg-surface-2)'
+            }}
           >
             {image ? '✅ Image uploaded' : '📷 Upload image'}
           </button>
@@ -171,26 +203,29 @@ export default function GenerateHomeworkModal({
           <button
             onClick={onClose}
             disabled={loading}
-            className="flex-1 rounded-lg border border-[#DCE8F5] px-4 py-2 text-sm font-medium text-[#457B9D] transition-colors hover:bg-[#DCE8F5] disabled:opacity-50"
+            className="flex-1 rounded-lg px-4 py-2 text-sm font-medium transition-colors disabled:opacity-50"
+            style={{
+              border: '1px solid var(--border)',
+              color: 'var(--text-secondary)',
+            }}
+            onMouseEnter={(e) => !loading && (e.currentTarget.style.backgroundColor = 'var(--bg-surface-2)')}
+            onMouseLeave={(e) => !loading && (e.currentTarget.style.backgroundColor = 'transparent')}
           >
             Cancel
           </button>
           <button
             onClick={handleGenerate}
             disabled={loading}
-            className="flex-1 rounded-lg bg-[#7c3aed] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#6d28d9] disabled:opacity-50"
+            className="flex-1 rounded-lg px-4 py-2 text-sm font-medium text-white transition-colors disabled:opacity-50"
+            style={{ backgroundColor: 'var(--accent)' }}
+            onMouseEnter={(e) => !loading && (e.currentTarget.style.backgroundColor = 'var(--accent-hover)')}
+            onMouseLeave={(e) => !loading && (e.currentTarget.style.backgroundColor = 'var(--accent)')}
           >
-            {loading ? (
-              <span className="flex items-center justify-center gap-2">
-                <span className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                Generating...
-              </span>
-            ) : (
-              '✨ Generate Homework'
-            )}
+            ✨ Generate Homework
           </button>
         </div>
       </div>
+      )}
     </div>
   )
 }

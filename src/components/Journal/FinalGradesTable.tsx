@@ -24,11 +24,11 @@ function autoFin(avg: string | null): number | null {
   return 2
 }
 
-function gColor(v: number | null): string {
-  if (v === 5) return '#1a7a2a'
-  if (v === 4) return '#185fa5'
-  if (v === 3) return '#854f0b'
-  if (v === 2) return '#a32d2d'
+function gColorClass(v: number | null): string {
+  if (v === 5) return styles.g5
+  if (v === 4) return styles.g4
+  if (v === 3) return styles.g3
+  if (v === 2) return styles.g2
   return ''
 }
 
@@ -59,28 +59,28 @@ export default function FinalGradesTable({ students, grades, finalOverride, onFi
       {/* Stats cards */}
       <div className={styles.statsRow}>
         <div className={styles.statCard}>
-          <div className={styles.statG} style={{ color: gColor(5) }}>
+          <div className={`${styles.statG} ${styles.g5}`}>
             5
           </div>
           <div className={styles.statN}>{stats[5]}</div>
           <div className={styles.statP}>{pct5}%</div>
         </div>
         <div className={styles.statCard}>
-          <div className={styles.statG} style={{ color: gColor(4) }}>
+          <div className={`${styles.statG} ${styles.g4}`}>
             4
           </div>
           <div className={styles.statN}>{stats[4]}</div>
           <div className={styles.statP}>{pct4}%</div>
         </div>
         <div className={styles.statCard}>
-          <div className={styles.statG} style={{ color: gColor(3) }}>
+          <div className={`${styles.statG} ${styles.g3}`}>
             3
           </div>
           <div className={styles.statN}>{stats[3]}</div>
           <div className={styles.statP}>{pct3}%</div>
         </div>
         <div className={styles.statCard}>
-          <div className={styles.statG} style={{ color: gColor(2) }}>
+          <div className={`${styles.statG} ${styles.g2}`}>
             2
           </div>
           <div className={styles.statN}>{stats[2]}</div>
@@ -111,8 +111,7 @@ export default function FinalGradesTable({ students, grades, finalOverride, onFi
                   </td>
                   <td className={styles.finAvg}>{avg ?? '—'}</td>
                   <td
-                    className={styles.finFin}
-                    style={{ color: gColor(fin) }}
+                    className={`${styles.finFin} ${gColorClass(fin)}`}
                     onClick={() => handleFin(si, fin)}
                   >
                     {fin ?? '—'}

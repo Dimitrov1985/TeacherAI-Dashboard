@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext' // ⏳ Временно вернули
 // import { useSupabaseAuth } from '../../context/SupabaseAuthContext' // ✅ Вернём позже
 import { IconBell, IconMessage } from './icons'
+import ThemeToggle from '../ThemeToggle'
 
 export default function TopIcons() {
   const navigate = useNavigate()
@@ -47,18 +48,29 @@ export default function TopIcons() {
   }, [isMenuOpen])
 
   return (
-    <div className="flex items-center justify-center gap-[42px]">
+    <div className="flex items-center justify-center gap-3">
+      {/* Theme Toggle */}
+      <ThemeToggle />
+
       <button
         type="button"
-        className="flex h-10 w-10 items-center justify-center rounded-lg bg-white shadow-[0_4px_4px_rgba(148,163,184,0.2)]"
+        className="flex h-10 w-10 items-center justify-center rounded-lg"
+        style={{
+          backgroundColor: 'var(--bg-surface)',
+          boxShadow: 'var(--card-shadow)',
+        }}
       >
-        <IconBell className="h-5 w-5 text-[#457B9D]" />
+        <IconBell className="h-5 w-5" style={{ color: 'var(--text-secondary)' }} />
       </button>
       <button
         type="button"
-        className="flex h-10 w-10 items-center justify-center rounded-lg bg-white shadow-[0_4px_4px_rgba(148,163,184,0.2)]"
+        className="flex h-10 w-10 items-center justify-center rounded-lg"
+        style={{
+          backgroundColor: 'var(--bg-surface)',
+          boxShadow: 'var(--card-shadow)',
+        }}
       >
-        <IconMessage className="h-5 w-5 text-[#457B9D]" />
+        <IconMessage className="h-5 w-5" style={{ color: 'var(--text-secondary)' }} />
       </button>
 
       <div ref={menuRef} className="relative">
@@ -71,12 +83,18 @@ export default function TopIcons() {
         </button>
 
         {isMenuOpen && (
-          <div className="absolute right-0 top-full z-50 mt-2 w-48 rounded-xl border border-[#DCE8F5] bg-white py-2 shadow-lg">
-            <div className="border-b border-[#DCE8F5] px-4 py-2">
-              <p className="text-sm font-semibold text-[#1D3557]">
+          <div
+            className="absolute right-0 top-full z-50 mt-2 w-48 rounded-xl py-2 shadow-lg"
+            style={{
+              backgroundColor: 'var(--bg-surface)',
+              border: '1px solid var(--border)',
+            }}
+          >
+            <div className="px-4 py-2" style={{ borderBottom: '1px solid var(--border)' }}>
+              <p className="text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>
                 {user?.firstName} {user?.lastName}
               </p>
-              <p className="text-xs text-[#B1B1B1]">{user?.email}</p>
+              <p className="text-xs" style={{ color: 'var(--text-muted)' }}>{user?.email}</p>
             </div>
             {menuItems.map((item, index) => (
               <button
@@ -85,11 +103,16 @@ export default function TopIcons() {
                   setIsMenuOpen(false)
                   item.action()
                 }}
-                className={`flex w-full items-center gap-3 px-4 py-2.5 text-left text-sm transition-colors ${
-                  item.danger
-                    ? 'text-[#CE1821] hover:bg-[#FFBABE]/20'
-                    : 'text-[#1D3557] hover:bg-[#DCE8F5]/50'
-                }`}
+                className="flex w-full items-center gap-3 px-4 py-2.5 text-left text-sm transition-colors"
+                style={{
+                  color: item.danger ? '#CE1821' : 'var(--text-primary)',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = item.danger ? '#FFBABE20' : 'var(--bg-surface-2)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = 'transparent';
+                }}
               >
                 <span className="text-base">{item.icon}</span>
                 <span className="font-medium">{item.label}</span>

@@ -1,29 +1,30 @@
 .page {
   flex: 1;
   overflow-y: auto;
-  background: #fff;
+  background: var(--bg-page);
   padding: 32px;
   display: flex;
   flex-direction: column;
   gap: 20px;
+  transition: background-color 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .head { display: flex; align-items: center; justify-content: space-between; }
-.title { font-size: 28px; font-weight: 700; color: #1D3557; }
-.subtitle { font-size: 13px; color: #94a3b8; margin-top: 2px; }
+.title { font-size: 28px; font-weight: 700; color: var(--text-primary); }
+.subtitle { font-size: 13px; color: var(--text-muted); margin-top: 2px; }
 
 .filters { display: flex; gap: 12px; flex-wrap: wrap; }
 .select {
   padding: 10px 14px;
-  border: 1px solid #DCE8F5;
+  border: 1px solid var(--border);
   border-radius: 10px;
   font-size: 13px;
-  color: #1D3557;
+  color: var(--text-primary);
   outline: none;
-  background: #fff;
-  transition: border-color 0.2s;
+  background: var(--bg-surface);
+  transition: border-color 0.3s ease, background-color 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
-.select:focus { border-color: #457B9D; }
+.select:focus { border-color: var(--accent); }
 
 /* empty */
 .empty {
@@ -31,8 +32,8 @@
   padding: 64px 0; text-align: center;
 }
 .emptyIcon { font-size: 48px; }
-.emptyTitle { font-size: 18px; font-weight: 600; color: #1D3557; }
-.emptyText { font-size: 13px; color: #94a3b8; }
+.emptyTitle { font-size: 18px; font-weight: 600; color: var(--text-primary); }
+.emptyText { font-size: 13px; color: var(--text-muted); }
 
 /* summary cards */
 .summaryGrid {
@@ -42,27 +43,28 @@
   max-width: 900px;
 }
 .sumCard {
-  background: #fff;
-  border: 1px solid rgba(69,123,157,0.1);
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
   border-radius: 16px;
   padding: 18px 20px;
-  box-shadow: 0 4px 14px rgba(69,123,157,0.06);
-  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: var(--card-shadow);
+  transition: transform 0.2s, box-shadow 0.2s, background-color 0.5s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
-.sumCard:hover { transform: translateY(-3px); box-shadow: 0 10px 26px rgba(69,123,157,0.12); }
+.sumCard:hover { transform: translateY(-3px); box-shadow: var(--card-shadow-hover); }
 .sumNum { font-size: 30px; font-weight: 700; line-height: 1; margin-bottom: 6px; }
-.sumLabel { font-size: 12px; color: #94a3b8; font-weight: 500; }
+.sumLabel { font-size: 12px; color: var(--text-muted); font-weight: 500; }
 
 /* chart */
 .chartBox {
-  background: #fff;
-  border: 1px solid rgba(69,123,157,0.1);
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
   border-radius: 16px;
   padding: 24px;
-  box-shadow: 0 4px 14px rgba(69,123,157,0.06);
+  box-shadow: var(--card-shadow);
   max-width: 900px;
+  transition: background-color 0.5s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
-.chartTitle { font-size: 15px; font-weight: 600; color: #1D3557; margin-bottom: 18px; }
+.chartTitle { font-size: 15px; font-weight: 600; color: var(--text-primary); margin-bottom: 18px; }
 
 .row {
   display: grid;
@@ -78,16 +80,17 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  color: #1D3557;
+  color: var(--text-primary);
 }
-.row.risk .name { color: #a32d2d; font-weight: 600; }
+.row.risk .name { color: var(--grade-2); font-weight: 600; }
 
 .track {
   height: 26px;
-  background: #e8edf3;
+  background: var(--bg-surface-2);
   border-radius: 8px;
   overflow: hidden;
   position: relative;
+  transition: background-color 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .fill {
   height: 100%;
@@ -105,17 +108,18 @@
 
 .valueBox { text-align: right; }
 .pct { font-size: 13px; font-weight: 700; }
-.miss { font-size: 11px; color: #94a3b8; margin-top: 1px; }
+.miss { font-size: 11px; color: var(--text-muted); margin-top: 1px; }
 
 .legend {
   display: flex;
   gap: 16px;
   margin-top: 18px;
   padding-top: 14px;
-  border-top: 1px solid #eef2f7;
+  border-top: 1px solid var(--border);
   flex-wrap: wrap;
   font-size: 11px;
-  color: #94a3b8;
+  color: var(--text-muted);
+  transition: border-color 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .leg { display: flex; align-items: center; gap: 6px; }
 .dot { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }

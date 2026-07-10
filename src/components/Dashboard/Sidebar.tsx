@@ -48,7 +48,10 @@ export default function Sidebar() {
   }
 
   return (
-    <aside className="flex w-full flex-col gap-6 bg-[#DCE8F5] px-4 py-6 lg:h-full lg:w-60 lg:flex-shrink-0 lg:gap-8 lg:rounded-r-[30px] lg:overflow-y-auto">
+    <aside
+      className="flex w-full flex-col gap-6 px-4 py-6 lg:h-full lg:w-60 lg:flex-shrink-0 lg:gap-8 lg:rounded-r-[30px] lg:overflow-y-auto"
+      style={{ backgroundColor: 'var(--bg-sidebar)' }}
+    >
       <div className="flex flex-col items-center gap-3">
         {/* TeacherHub Logo */}
         <svg width="80" height="80" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="TeacherHub icon">
@@ -64,10 +67,11 @@ export default function Sidebar() {
           <line x1="28.5" y1="28.7" x2="39.5" y2="30" stroke="#9FBFD8" strokeWidth="1.2" strokeLinecap="round"/>
         </svg>
         <div className="flex flex-col items-center gap-0.5 text-center">
-          <h1 className="text-lg font-bold text-[#1D3557]">TeacherHub</h1>
+          <h1 className="text-lg font-bold" style={{ color: 'var(--text-primary)' }}>TeacherHub</h1>
           <button
             onClick={() => setShowProfileModal(true)}
-            className="text-xs font-medium text-[#457B9D] hover:underline cursor-pointer"
+            className="text-xs font-medium hover:underline cursor-pointer"
+            style={{ color: 'var(--text-secondary)' }}
             title="Click to edit your profile"
           >
             {teacherName}
@@ -75,7 +79,7 @@ export default function Sidebar() {
         </div>
       </div>
 
-      <div className="h-px w-full bg-gradient-to-r from-transparent via-[#457B9D] to-transparent" />
+      <div className="h-px w-full" style={{ background: 'linear-gradient(to right, transparent, var(--border-strong), transparent)' }} />
 
       <nav className="flex flex-col gap-1">
         {navItems.map(({ label, icon: Icon, path }) => {
@@ -84,9 +88,22 @@ export default function Sidebar() {
             <Link
               key={label}
               to={path}
-              className={`flex items-center gap-4 rounded-2xl px-4 py-2 text-base font-medium transition-colors ${
-                isActive ? 'bg-[#457B9D] text-white' : 'text-[#457B9D] hover:bg-[#457B9D]/10'
-              }`}
+              className="flex items-center gap-4 rounded-2xl px-4 py-2 text-base font-medium transition-colors"
+              style={
+                isActive
+                  ? { backgroundColor: 'var(--accent)', color: 'white' }
+                  : { color: 'var(--text-secondary)' }
+              }
+              onMouseEnter={(e) => {
+                if (!isActive) {
+                  e.currentTarget.style.backgroundColor = 'var(--bg-surface-2)'
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (!isActive) {
+                  e.currentTarget.style.backgroundColor = 'transparent'
+                }
+              }}
             >
               <Icon className="h-5 w-5 flex-shrink-0" />
               <span>{label}</span>

@@ -1,1 +1,103 @@
 @import "tailwindcss";
+
+/* ========================================
+   СИСТЕМА ТЕМАТИЗАЦИИ
+   ======================================== */
+
+:root {
+  /* Основные фоны */
+  --bg-page: #f4f7fb;
+  --bg-surface: #ffffff;
+  --bg-surface-2: #f8fafc;
+  --bg-sidebar: #DCE8F5;
+  --bg-surface-hover: #f8f8f6;
+  --bg-hover: #e6f1fb;
+  --bg-error: #fcebeb;
+
+  /* Текст */
+  --text-primary: #1D3557;
+  --text-secondary: #457B9D;
+  --text-muted: #94a3b8;
+
+  /* Границы */
+  --border: #DCE8F5;
+  --border-strong: #b0c4d8;
+
+  /* Акценты */
+  --accent: #457B9D;
+  --accent-hover: #1D3557;
+
+  /* Тени */
+  --card-shadow: 0 4px 14px rgba(69, 123, 157, 0.06);
+  --card-shadow-hover: 0 10px 26px rgba(69, 123, 157, 0.12);
+
+  /* Оценки (светлая тема) */
+  --grade-5: #1a7a2a;
+  --grade-4: #185fa5;
+  --grade-3: #854f0b;
+  --grade-2: #a32d2d;
+}
+
+[data-theme="dark"] {
+  /* Основные фоны */
+  --bg-page: #0f172a;
+  --bg-surface: #1e293b;
+  --bg-surface-2: #243449;
+  --bg-sidebar: #1a2942;
+  --bg-surface-hover: #2d3a4f;
+  --bg-hover: #334155;
+  --bg-error: #3f1f1f;
+
+  /* Текст */
+  --text-primary: #e2e8f0;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+
+  /* Границы */
+  --border: #334155;
+  --border-strong: #475569;
+
+  /* Акценты */
+  --accent: #60a5fa;
+  --accent-hover: #93c5fd;
+
+  /* Тени */
+  --card-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
+  --card-shadow-hover: 0 10px 26px rgba(0, 0, 0, 0.45);
+
+  /* Оценки (тёмная тема) */
+  --grade-5: #4ade80;
+  --grade-4: #60a5fa;
+  --grade-3: #fbbf24;
+  --grade-2: #f87171;
+}
+
+/* Плавный переход при смене темы */
+body,
+aside,
+main,
+header,
+input,
+select,
+textarea,
+button,
+.card,
+div,
+section,
+nav {
+  transition: background-color 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+              border-color 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+              color 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Базовые стили */
+body {
+  background-color: var(--bg-page);
+  color: var(--text-primary);
+}
+
+/* Заголовки — автоматически адаптируются под тему */
+h1, h2, h3, h4, h5, h6 {
+  color: var(--text-primary);
+}

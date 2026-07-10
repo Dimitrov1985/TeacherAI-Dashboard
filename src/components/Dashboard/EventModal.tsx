@@ -57,7 +57,8 @@ export default function EventModal({ event, onSave, onDelete, onClose }: EventMo
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 p-4"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}
       onClick={(e) => {
         e.stopPropagation()
         onClose()
@@ -65,19 +66,27 @@ export default function EventModal({ event, onSave, onDelete, onClose }: EventMo
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="flex w-full max-w-md flex-col gap-4 rounded-2xl bg-white p-6 shadow-xl"
+        className="flex w-full max-w-md flex-col gap-4 rounded-2xl p-6 shadow-xl"
+        style={{
+          backgroundColor: 'var(--bg-surface)',
+          border: '1px solid var(--border)',
+        }}
       >
         <div className="flex items-center justify-between">
           <div className="flex flex-col gap-1">
-            <h3 className="text-lg font-semibold text-[#1D3557]">
+            <h3 className="text-lg font-semibold" style={{ color: 'var(--text-primary)' }}>
               {event ? 'Редактировать событие' : 'Новое событие'}
             </h3>
-            <span className="text-sm text-[#457B9D]">{formattedDate}</span>
+            <span className="text-sm" style={{ color: 'var(--text-secondary)' }}>{formattedDate}</span>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="text-[#B1B1B1] hover:text-[#1D3557]"
+            className="transition-colors"
+            style={{ color: 'var(--text-muted)' }}
+            onMouseEnter={(e) => e.currentTarget.style.color = 'var(--text-primary)'}
+            onMouseLeave={(e) => e.currentTarget.style.color = 'var(--text-muted)'}
+
           >
             ✕
           </button>

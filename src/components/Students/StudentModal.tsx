@@ -45,17 +45,35 @@ export default function StudentModal({ student, onSave, onDelete, onClose }: Stu
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-      <div className="flex w-full max-w-2xl flex-col gap-6 rounded-2xl bg-white p-6 shadow-xl">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}
+    >
+      <div
+        className="flex w-full max-w-2xl flex-col gap-6 rounded-2xl p-6 shadow-xl max-h-[90vh] overflow-y-auto"
+        style={{
+          backgroundColor: 'var(--bg-surface)',
+          border: '1px solid var(--border)',
+        }}
+      >
         {/* Header */}
         <div className="flex items-center justify-between">
-          <h2 className="text-xl font-bold text-[#1D3557]">
+          <h2 className="text-xl font-bold" style={{ color: 'var(--text-primary)' }}>
             {student ? 'Редактировать ученика' : 'Добавить ученика'}
           </h2>
           <button
             type="button"
             onClick={onClose}
-            className="flex h-8 w-8 items-center justify-center rounded-lg text-[#ACACAC] transition-colors hover:bg-[#DCE8F5] hover:text-[#1D3557]"
+            className="flex h-8 w-8 items-center justify-center rounded-lg transition-colors"
+            style={{ color: 'var(--text-muted)' }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = 'var(--bg-surface-2)';
+              e.currentTarget.style.color = 'var(--text-primary)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = 'transparent';
+              e.currentTarget.style.color = 'var(--text-muted)';
+            }}
           >
             <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />

@@ -79,7 +79,10 @@ export default function StudentsPage() {
   console.log('RENDER - hasStudents:', hasStudents)
 
   return (
-    <main className="flex flex-1 flex-col gap-6 overflow-y-auto bg-white px-4 py-8 sm:px-10 lg:px-16">
+    <main
+      className="flex flex-1 flex-col gap-6 overflow-y-auto px-4 py-8 sm:px-10 lg:px-16"
+      style={{ backgroundColor: 'var(--bg-page)' }}
+    >
       {!hasStudents ? (
         <>
           {/* Empty State - No Students */}
@@ -93,13 +96,16 @@ export default function StudentsPage() {
               />
             </svg>
             <div className="text-center">
-              <h2 className="text-2xl font-bold text-[#1D3557]">No Students Yet</h2>
-              <p className="mt-2 text-sm text-[#ACACAC]">Import students to start working with the journal</p>
+              <h2 className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>No Students Yet</h2>
+              <p className="mt-2 text-sm" style={{ color: 'var(--text-muted)' }}>Import students to start working with the journal</p>
             </div>
             <button
               type="button"
               onClick={() => setBulkImportOpen(true)}
-              className="flex items-center gap-2 rounded-lg bg-[#457B9D] px-8 py-4 text-base font-medium text-white transition-colors hover:bg-[#1D3557]"
+              className="flex items-center gap-2 rounded-lg px-8 py-4 text-base font-medium text-white transition-colors"
+              style={{ backgroundColor: 'var(--accent)' }}
+              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--accent-hover)'}
+              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--accent)'}
             >
               <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
@@ -113,13 +119,16 @@ export default function StudentsPage() {
           {/* Header */}
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-[#1D3557]">Students Journal</h1>
-              <p className="text-sm text-[#ACACAC]">Grades, Attendance & Final Scores</p>
+              <h1 className="text-3xl font-bold" style={{ color: 'var(--text-primary)' }}>Students Journal</h1>
+              <p className="text-sm" style={{ color: 'var(--text-muted)' }}>Grades, Attendance & Final Scores</p>
             </div>
             <button
               type="button"
               onClick={() => setBulkImportOpen(true)}
-              className="flex items-center gap-2 rounded-lg bg-[#457B9D] px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-[#1D3557]"
+              className="flex items-center gap-2 rounded-lg px-6 py-3 text-sm font-medium text-white transition-colors"
+              style={{ backgroundColor: 'var(--accent)' }}
+              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--accent-hover)'}
+              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--accent)'}
             >
               <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />

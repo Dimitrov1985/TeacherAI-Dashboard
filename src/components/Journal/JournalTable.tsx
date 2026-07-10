@@ -51,12 +51,12 @@ function gClass(v: GradeValue): string {
   return styles.sp
 }
 
-function gColor(v: number | string | null): string {
+function gColorClass(v: number | string | null): string {
   const n = typeof v === 'string' ? +v : v
-  if (n === 5) return '#1a7a2a'
-  if (n === 4) return '#185fa5'
-  if (n === 3) return '#854f0b'
-  if (n === 2) return '#a32d2d'
+  if (n === 5) return styles.g5
+  if (n === 4) return styles.g4
+  if (n === 3) return styles.g3
+  if (n === 2) return styles.g2
   return ''
 }
 
@@ -264,7 +264,7 @@ export default function JournalTable({
                     </>
                   ))}
                   <td className={styles.tdAvg}>{avg ?? ''}</td>
-                  <td className={styles.tdFin} style={{ color: gColor(fin) }} onClick={() => handleFin(si, fin)}>
+                  <td className={`${styles.tdFin} ${gColorClass(fin)}`} onClick={() => handleFin(si, fin)}>
                     {fin ?? ''}
                   </td>
                 </tr>

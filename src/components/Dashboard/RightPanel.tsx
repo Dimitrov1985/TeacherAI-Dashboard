@@ -56,7 +56,13 @@ export default function RightPanel({
   }
 
   return (
-    <aside className="flex w-full flex-col gap-5 bg-[#DCE8F5] p-5 lg:h-full lg:w-80 lg:flex-shrink-0 lg:overflow-y-auto">
+    <aside
+      className="flex w-full flex-col gap-5 p-5 lg:h-full lg:w-80 lg:flex-shrink-0 lg:overflow-y-auto"
+      style={{
+        backgroundColor: 'var(--bg-sidebar)',
+        transition: 'background-color 0.3s ease',
+      }}
+    >
       <TopIcons />
       <MiniCalendar
         month={month}

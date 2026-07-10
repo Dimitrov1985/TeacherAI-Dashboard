@@ -71,7 +71,8 @@ export default function GeneratePlanModal({ onClose, onGenerate }: GeneratePlanM
 
   return (
     <div
-      className="fixed inset-0 z-[60] flex items-center justify-center bg-black/30 p-4"
+      className="fixed inset-0 z-[60] flex items-center justify-center p-4"
+      style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}
       onClick={(event) => {
         event.stopPropagation()
         if (!loading) onClose()
@@ -79,9 +80,13 @@ export default function GeneratePlanModal({ onClose, onGenerate }: GeneratePlanM
     >
       <div
         onClick={(event) => event.stopPropagation()}
-        className="flex w-full max-w-sm flex-col gap-4 rounded-2xl bg-white p-5 shadow-xl"
+        className="flex w-full max-w-sm flex-col gap-4 rounded-2xl p-5 shadow-xl"
+        style={{
+          backgroundColor: 'var(--bg-surface)',
+          border: '1px solid var(--border)',
+        }}
       >
-        <h3 className="text-base font-semibold text-[#1D3557]">Generate lesson plan</h3>
+        <h3 className="text-base font-semibold" style={{ color: 'var(--text-primary)' }}>Generate lesson plan</h3>
 
         <input
           ref={fileInputRef}
@@ -95,7 +100,10 @@ export default function GeneratePlanModal({ onClose, onGenerate }: GeneratePlanM
           type="button"
           onClick={() => fileInputRef.current?.click()}
           disabled={loading}
-          className="flex flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-[#DCE8F5] py-8 text-center transition-colors hover:border-[#457B9D] disabled:opacity-60"
+          className="flex flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed py-8 text-center transition-colors disabled:opacity-60"
+          style={{ borderColor: 'var(--border)' }}
+          onMouseEnter={(e) => !loading && (e.currentTarget.style.borderColor = 'var(--accent)')}
+          onMouseLeave={(e) => !loading && (e.currentTarget.style.borderColor = 'var(--border)')}
         >
           {preview ? (
             <img src={preview} alt={fileName ?? 'Textbook page'} className="max-h-40 rounded-lg object-contain" />

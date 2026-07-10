@@ -23,22 +23,28 @@ export default function MiniCalendar({
   const days = buildMonthGrid(month)
 
   return (
-    <div className="flex w-full flex-col gap-2 rounded-xl bg-white px-3 py-2 shadow-[0_6px_12px_rgba(148,163,184,0.15)]">
+    <div
+      className="flex w-full flex-col gap-2 rounded-xl px-3 py-2"
+      style={{
+        backgroundColor: 'var(--bg-surface)',
+        boxShadow: 'var(--card-shadow)',
+      }}
+    >
       <div className="flex items-center justify-between py-2">
         <button type="button" aria-label="Previous month" onClick={onPrevMonth} className="transition-opacity hover:opacity-70">
-          <IconArrowLeft className="h-5 w-5 text-[#457B9D]" />
+          <IconArrowLeft className="h-5 w-5" style={{ color: 'var(--text-secondary)' }} />
         </button>
-        <span className="text-base font-medium text-[#1D3557]">
+        <span className="text-base font-medium" style={{ color: 'var(--text-primary)' }}>
           {MONTH_NAMES[month.getMonth()]} {month.getFullYear()}
         </span>
         <button type="button" aria-label="Next month" onClick={onNextMonth} className="transition-opacity hover:opacity-70">
-          <IconArrowRight className="h-5 w-5 text-[#457B9D]" />
+          <IconArrowRight className="h-5 w-5" style={{ color: 'var(--text-secondary)' }} />
         </button>
       </div>
 
       <div className="grid grid-cols-7">
         {weekdays.map((d) => (
-          <div key={d} className="py-1.5 text-center text-xs text-[#1D3557]">
+          <div key={d} className="py-1.5 text-center text-xs" style={{ color: 'var(--text-primary)' }}>
             {d}
           </div>
         ))}
@@ -53,13 +59,24 @@ export default function MiniCalendar({
               <button
                 type="button"
                 onClick={() => onSelectDate(cell.date)}
-                className={`relative flex h-7 w-7 items-center justify-center rounded-full text-xs transition-colors ${
+                className="relative flex h-7 w-7 items-center justify-center rounded-full text-xs transition-colors"
+                style={
                   selected
-                    ? 'bg-[#1D3557] text-white'
+                    ? { backgroundColor: 'var(--accent)', color: 'white' }
                     : cell.inCurrentMonth
-                      ? 'text-[#457B9D] hover:bg-[#DCE8F5]'
-                      : 'text-[#CBD5E1] hover:bg-[#DCE8F5]'
-                }`}
+                      ? { color: 'var(--text-secondary)' }
+                      : { color: 'var(--text-muted)' }
+                }
+                onMouseEnter={(e) => {
+                  if (!selected) {
+                    e.currentTarget.style.backgroundColor = 'var(--bg-surface-2)';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!selected) {
+                    e.currentTarget.style.backgroundColor = 'transparent';
+                  }
+                }}
               >
                 {cell.day}
                 {!selected && hasNote && (

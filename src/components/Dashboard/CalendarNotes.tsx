@@ -51,11 +51,17 @@ export default function CalendarNotes({
   }
 
   return (
-    <div className="flex w-full flex-col gap-3 rounded-xl bg-white p-4 shadow-[0_6px_12px_rgba(148,163,184,0.15)]">
+    <div
+      className="flex w-full flex-col gap-3 rounded-xl p-4"
+      style={{
+        backgroundColor: 'var(--bg-surface)',
+        boxShadow: 'var(--card-shadow)',
+      }}
+    >
       <div className="flex items-center justify-between">
         <div className="flex flex-col gap-1">
-          <span className="text-base font-medium text-[#1D3557]">Заметки</span>
-          <span className="text-xs text-[#ACACAC]">{formattedDate}</span>
+          <span className="text-base font-medium" style={{ color: 'var(--text-primary)' }}>Заметки</span>
+          <span className="text-xs" style={{ color: 'var(--text-muted)' }}>{formattedDate}</span>
         </div>
         <button
           type="button"

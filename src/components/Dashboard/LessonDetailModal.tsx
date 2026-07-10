@@ -96,7 +96,11 @@ export default function LessonDetailModal({ lesson, onClose, onEdit }: LessonDet
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 p-4" onClick={onClose}>
       <div
         onClick={(event) => event.stopPropagation()}
-        className="flex max-h-[85vh] w-full max-w-md flex-col gap-4 rounded-2xl bg-white p-5 shadow-xl"
+        className="flex max-h-[85vh] w-full max-w-md flex-col gap-4 rounded-2xl p-5 shadow-xl"
+        style={{
+          backgroundColor: 'var(--bg-surface)',
+          border: '1px solid var(--border)',
+        }}
       >
         <div className="flex items-center gap-3">
           <div
@@ -106,11 +110,11 @@ export default function LessonDetailModal({ lesson, onClose, onEdit }: LessonDet
             {detail?.icon ?? '📘'}
           </div>
           <div className="flex flex-col">
-            <span className="text-base font-semibold text-[#1D3557]">{lesson.title}</span>
+            <span className="text-base font-semibold text-[var(--text-primary)]">{lesson.title}</span>
             {lesson.class && (
-              <span className="text-xs text-[#457B9D] opacity-80">{lesson.class}</span>
+              <span className="text-xs text-[var(--accent)] opacity-80">{lesson.class}</span>
             )}
-            <span className="flex items-center gap-1 text-xs text-[#457B9D]">
+            <span className="flex items-center gap-1 text-xs text-[var(--accent)]">
               <IconClock className="h-3 w-3" />
               {lesson.start} – {lesson.end}
             </span>
@@ -118,20 +122,20 @@ export default function LessonDetailModal({ lesson, onClose, onEdit }: LessonDet
           <button
             type="button"
             onClick={onEdit}
-            className="ml-auto rounded-lg px-3 py-1.5 text-sm font-medium text-[#457B9D] hover:bg-[#DCE8F5]"
+            className="ml-auto rounded-lg px-3 py-1.5 text-sm font-medium text-[var(--accent)] hover:bg-[var(--bg-surface-2)]"
           >
             Edit
           </button>
         </div>
 
-        <div className="flex gap-1 border-b border-[#DCE8F5]">
+        <div className="flex gap-1 border-b border-[var(--border)]">
           {(['materials', 'homework'] as Tab[]).map((t) => (
             <button
               key={t}
               type="button"
               onClick={() => setTab(t)}
               className={`px-3 py-2 text-sm font-medium capitalize transition-colors ${
-                tab === t ? 'border-b-2 border-[#457B9D] text-[#457B9D]' : 'text-[#B1B1B1] hover:text-[#457B9D]'
+                tab === t ? 'border-b-2 border-[#457B9D] text-[var(--accent)]' : 'text-[var(--text-muted)] hover:text-[var(--accent)]'
               }`}
             >
               {t}
@@ -160,34 +164,34 @@ export default function LessonDetailModal({ lesson, onClose, onEdit }: LessonDet
                       <button
                         type="button"
                         onClick={() => setConfirmDeleteIndex(null)}
-                        className="rounded-lg px-2.5 py-1 text-xs font-medium text-[#457B9D] hover:bg-white"
+                        className="rounded-lg px-2.5 py-1 text-xs font-medium text-[var(--accent)] hover:bg-[var(--bg-surface-2)]"
                       >
                         Cancel
                       </button>
                     </div>
                   ) : (
-                    <div key={`${m.title}-${index}`} className="flex items-center gap-2 rounded-lg px-2 py-2 hover:bg-[#DCE8F5]/50">
+                    <div key={`${m.title}-${index}`} className="flex items-center gap-2 rounded-lg px-2 py-2 hover:bg-[var(--bg-surface-2)]/50">
                       <button
                         type="button"
                         onClick={() => m.plan && setViewingPlanIndex(index)}
                         disabled={!m.plan}
                         className="flex min-w-0 flex-1 items-center gap-3 text-left disabled:cursor-default"
                       >
-                        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#DCE8F5] text-lg">
+                        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[var(--bg-surface-2)] text-lg">
                           {m.icon}
                         </div>
                         <div className="flex min-w-0 flex-1 flex-col">
-                          <span className="truncate text-sm font-medium text-[#1D3557]">{m.title}</span>
-                          <span className="text-xs text-[#B1B1B1]">{m.meta}</span>
+                          <span className="truncate text-sm font-medium text-[var(--text-primary)]">{m.title}</span>
+                          <span className="text-xs text-[var(--text-muted)]">{m.meta}</span>
                         </div>
-                        <span className="text-[#457B9D]">{m.plan ? '🗂️' : '⬇'}</span>
+                        <span className="text-[var(--accent)]">{m.plan ? '🗂️' : '⬇'}</span>
                       </button>
                       {m.plan && (
                         <button
                           type="button"
                           aria-label="Download as Word"
                           onClick={(e) => handleDownloadMaterial(m, e)}
-                          className="text-[#457B9D] hover:text-[#1D3557]"
+                          className="text-[var(--accent)] hover:text-[var(--text-primary)]"
                           title="Скачать Word"
                         >
                           <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -199,7 +203,7 @@ export default function LessonDetailModal({ lesson, onClose, onEdit }: LessonDet
                         type="button"
                         aria-label="Remove material"
                         onClick={() => setConfirmDeleteIndex(index)}
-                        className="text-[#B1B1B1] hover:text-[#FF4974]"
+                        className="text-[var(--text-muted)] hover:text-[#FF4974]"
                       >
                         ✕
                       </button>
@@ -207,31 +211,31 @@ export default function LessonDetailModal({ lesson, onClose, onEdit }: LessonDet
                   ),
                 )}
                 {materials.length === 0 && (
-                  <div className="flex flex-col items-center gap-2 rounded-xl border-2 border-dashed border-[#DCE8F5] py-8 text-center">
+                  <div className="flex flex-col items-center gap-2 rounded-xl border-2 border-dashed border-[var(--border)] py-8 text-center">
                     <span className="text-3xl">📂</span>
-                    <p className="text-sm font-medium text-[#457B9D]">No materials yet</p>
-                    <p className="px-6 text-xs text-[#B1B1B1]">
+                    <p className="text-sm font-medium text-[var(--accent)]">No materials yet</p>
+                    <p className="px-6 text-xs text-[var(--text-muted)]">
                       Generated lesson plans and uploaded files will show up here.
                     </p>
                   </div>
                 )}
               </div>
 
-              <div className="border-t border-[#DCE8F5] pt-3">
+              <div className="border-t border-[var(--border)] pt-3">
                 <button
                   type="button"
                   onClick={() => setGenerateOpen(true)}
-                  className="w-full rounded-lg bg-[#457B9D] px-3 py-2 text-sm font-medium text-white hover:bg-[#1D3557]"
+                  className="w-full rounded-lg bg-[var(--accent)] px-3 py-2 text-sm font-medium text-white hover:bg-[var(--accent-hover)]"
                 >
                   Сгенерировать план урока
                 </button>
               </div>
             </div>
           ) : homework.length === 0 ? (
-            <div className="flex flex-col items-center gap-2 rounded-xl border-2 border-dashed border-[#DCE8F5] py-8 text-center">
+            <div className="flex flex-col items-center gap-2 rounded-xl border-2 border-dashed border-[var(--border)] py-8 text-center">
               <span className="text-3xl">🎉</span>
-              <p className="text-sm font-medium text-[#457B9D]">No homework yet</p>
-              <p className="px-6 text-xs text-[#B1B1B1]">Assignments for this lesson will appear here.</p>
+              <p className="text-sm font-medium text-[var(--accent)]">No homework yet</p>
+              <p className="px-6 text-xs text-[var(--text-muted)]">Assignments for this lesson will appear here.</p>
             </div>
           ) : (
             <div className="flex flex-col gap-2">
@@ -242,14 +246,14 @@ export default function LessonDetailModal({ lesson, onClose, onEdit }: LessonDet
                     onClick={() => toggleHomework(index)}
                     aria-label={hw.done ? 'Mark as not done' : 'Mark as done'}
                     className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-md border-2 text-xs text-white transition-colors ${
-                      hw.done ? 'border-[#3ECD88] bg-[#3ECD88]' : 'border-[#DCE8F5] bg-white'
+                      hw.done ? 'border-[#3ECD88] bg-[#3ECD88]' : 'border-[var(--border)] bg-[var(--bg-surface)]'
                     }`}
                   >
                     {hw.done && '✓'}
                   </button>
                   <div className="flex min-w-0 flex-1 flex-col">
-                    <span className="truncate text-sm font-medium text-[#1D3557]">{hw.title}</span>
-                    <span className="text-xs text-[#B1B1B1]">{hw.due}</span>
+                    <span className="truncate text-sm font-medium text-[var(--text-primary)]">{hw.title}</span>
+                    <span className="text-xs text-[var(--text-muted)]">{hw.due}</span>
                   </div>
                   <span className={`rounded-full px-2 py-1 text-xs font-medium ${STATUS_STYLES[hw.status]}`}>
                     {capitalize(hw.status)}
@@ -263,7 +267,7 @@ export default function LessonDetailModal({ lesson, onClose, onEdit }: LessonDet
         <button
           type="button"
           onClick={onClose}
-          className="self-end rounded-lg px-3 py-2 text-sm font-medium text-[#457B9D] hover:bg-[#DCE8F5]"
+          className="self-end rounded-lg px-3 py-2 text-sm font-medium text-[var(--accent)] hover:bg-[var(--bg-surface-2)]"
         >
           Close
         </button>

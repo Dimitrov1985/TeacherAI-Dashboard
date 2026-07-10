@@ -22,15 +22,15 @@ function StatCard({ label, value }: StatCardProps) {
   return (
     <div
       style={{
-        background: '#fff',
+        background: 'var(--bg-surface)',
         borderRadius: 14,
         padding: '1rem 1.25rem',
-        border: '1px solid #f0f0f0',
+        border: '1px solid var(--border)',
         flex: 1,
       }}
     >
-      <div style={{ fontSize: 12, color: '#aaa', marginBottom: 6 }}>{label}</div>
-      <div style={{ fontSize: 24, fontWeight: 700, color: '#1a1a2e' }}>{value}</div>
+      <div style={{ fontSize: 12, color: 'var(--text-muted)', marginBottom: 6 }}>{label}</div>
+      <div style={{ fontSize: 24, fontWeight: 700, color: 'var(--text-primary)' }}>{value}</div>
     </div>
   )
 }
@@ -59,12 +59,12 @@ function DetailCard({ data, index, onClose }: DetailCardProps) {
         position: 'absolute',
         top: 10,
         right: 10,
-        background: '#fff',
-        border: '1px solid #f0f0f0',
+        background: 'var(--bg-surface)',
+        border: '1px solid var(--border)',
         borderRadius: 14,
         padding: '14px 18px',
         minWidth: 150,
-        boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
+        boxShadow: 'var(--card-shadow)',
         animation: 'popIn 0.2s ease',
         zIndex: 10,
       }}
@@ -84,11 +84,11 @@ function DetailCard({ data, index, onClose }: DetailCardProps) {
       >
         ✕
       </button>
-      <div style={{ fontSize: 13, color: '#aaa', marginBottom: 4 }}>{data.labels[index]}</div>
-      <div style={{ fontSize: 24, fontWeight: 700, color: '#7F77DD' }}>
+      <div style={{ fontSize: 13, color: 'var(--text-muted)', marginBottom: 4 }}>{data.labels[index]}</div>
+      <div style={{ fontSize: 24, fontWeight: 700, color: 'var(--accent)' }}>
         {data.values[index]} plans
       </div>
-      <div style={{ fontSize: 12, color: '#aaa', marginTop: 2 }}>
+      <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 2 }}>
         {pct}% of total · rank #{rank}
       </div>
     </div>
@@ -467,10 +467,10 @@ export default function LessonsStatistics({ lessonPlans }: LessonsStatisticsProp
       {/* Chart card */}
       <div
         style={{
-          background: '#fff',
+          background: 'var(--bg-surface)',
           borderRadius: 16,
           padding: '1.5rem',
-          border: '1px solid #f0f0f0',
+          border: '1px solid var(--border)',
         }}
       >
         {/* Header */}
@@ -483,8 +483,8 @@ export default function LessonsStatistics({ lessonPlans }: LessonsStatisticsProp
           }}
         >
           <div>
-            <div style={{ fontSize: 16, fontWeight: 600 }}>Plans overview</div>
-            <div style={{ fontSize: 12, color: '#aaa', marginTop: 2 }}>
+            <div style={{ fontSize: 16, fontWeight: 600, color: 'var(--text-primary)' }}>Plans overview</div>
+            <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 2 }}>
               Click a bar for details
             </div>
           </div>
@@ -503,9 +503,9 @@ export default function LessonsStatistics({ lessonPlans }: LessonsStatisticsProp
                   cursor: 'pointer',
                   fontFamily: 'Inter,sans-serif',
                   transition: 'all 0.2s',
-                  background: view === v ? '#7F77DD' : 'transparent',
-                  color: view === v ? '#fff' : '#aaa',
-                  border: `1.5px solid ${view === v ? '#7F77DD' : '#e0e0e0'}`,
+                  background: view === v ? 'var(--accent)' : 'transparent',
+                  color: view === v ? '#fff' : 'var(--text-muted)',
+                  border: `1.5px solid ${view === v ? 'var(--accent)' : 'var(--border)'}`,
                 }}
               >
                 {v === 'grade' ? 'By grade' : 'By subject'}
@@ -531,7 +531,7 @@ export default function LessonsStatistics({ lessonPlans }: LessonsStatisticsProp
                 alignItems: 'center',
                 gap: 6,
                 fontSize: 12,
-                color: '#777',
+                color: 'var(--text-secondary)',
                 cursor: 'pointer',
                 opacity: selected === null || selected === i ? 1 : 0.45,
                 transition: 'opacity 0.2s',
